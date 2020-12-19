@@ -3,18 +3,21 @@ int cMapSize = 1;
 string gPlayers = "TwentyOneScore|Kastor|three|four|five|six|seven|eight|nine|ten";
 
 // GLOBALS
-int gQueryID = -1;
-int gNumberTeams = 2;
+int gBattleSong = 1;
 int gBuildEnds = 0;
+int gBuildSong = 1;
 int gBuildTime = 15;
-int gRound = 0;
+int gFavInc = 5;
+int gFavRound = 50;
 int gGameWins = 7;
-int gTrackBuild = 1;
-int gTrackBattle = 1;
-int gBuildRes = 1200;
-int gBuildFav = 50;
+int gInstr = 1;
+int gNumberTeams = 2;
+int gQueryID = -1;
+int gResInc = 50;
+int gResRound = 1200;
+int gRound = 0;
 float gMinTeamCnt = 1.0;
-bool RoundFlag = false;
+string gMsg = "";
 
 const int cCivDataGodPowers = 0;
 const int cCivDataBuildings = 1;
@@ -55,21 +58,124 @@ const int cUnitTypeUnit = 935;
 const int cUnitTypeBuilding = 937;
 const int cUnitStateBuilding = 1;
 const int cUnitStateAlive = 2;
+
 // STRING CONSTANTS
 const string cES = "";
-const string cSP = " ";
-const string cDI = "#";
-const string cDS = "|";
+const string cAT = "@";
+const string cCO = ",";
+const string cEX = "!";
+const string cLB = "#";
+const string cN1 = "1";
+const string cPI = "|";
+const string cPS = "%";
 const string cSL = "/";
-// LIST CONSTANTS
+const string cSP = " ";
+const string cCL = ":";
+
+// STRINGS USED INTERNALLY
+const string gClr1 = "<color={playerColor(";
+const string gClr2 = ")}>";
+const string gClr3 = "</color>";
+
+
+const string gGameID = "bloodsport";
+const string gSlash = " / ";
+const string gArmy = "Army";
+const string gBuilding = "_building";
+const string gBattling = "_battling";
 const string gResAll = "food|wood|gold|favor";
 const string gResFWG = "food|wood|gold";
+const string gFavor = "favor";
+const string gMP3 = ".mp3";
+const string gBattleSky = "Default";
+const string gBattleCry = "battlecry4.wav";
+const string gBuildCry = "sentinelbirth.wav";
+const string gBuildSky = "Anatolia";
+const string gEnemy = "enemy";
+const string gMusicEvent = "gameMusicBattle";
+const string gGaiaUnit = "default";
+const string gHealString = "Healing Spring";
+const string gCackle = "/dialog/en/skul062.mp3";
+
+const string gCivTemple = "Temple";
+const string gCivMarket = "Market";
+const string gCivArmy1 = "Academy|Barracks|LongHouse|Barracks Atlantean|Barracks Chinese";
+const string gCivArmy2 = "Archery Range|Barracks|LongHouse|Barracks Atlantean|Barracks Chinese";
+const string gCivArmy3 = "Stable|Barracks|LongHouse|Counter Building|Stable Chinese";
+const string gCivArmory = "Armory|Dwarf Foundry";
+const string gCivKeep = "Fortress|Migdol Stronghold|Hill Fort|Palace|Castle";
+const string gAgeUpPowers = "Bolt|Restoration|Bolt|Lightning Storm";
+const string gAge3CivPowers = "Bronze|Skeleton Power|Flaming Weapons|Bronze|Geyser";
+
+const string gBlockUnits = "Shade of Hades|Shade|Oracle Scout";
+const string gBlockGarrison = "Helepolis|Siege Tower";
+const string gBlockFlying = "Pegasus|Roc|flying medic|Stymphalian Bird|Vermilion Bird";
+
+// LANGUAGE STRINGS
+const string csWins = "Wins";
+const string csGranted = "You have been granted";
+const string csAnd = " and ";
+const string csEgg = "**** Bloodsport Version 4.0 by TwentyOneScore ****";
+const string csThanks = "Thanks for playing Bloodsport!";
+const string csRemovedGame = "Removed Team @ from the game.";
+const string csRoundStarts = "Round #@ starts in";
+const string csTeamWonRounds = "Team @ won @ rounds.";
+const string csCongrats = "Congratulations @!";
+const string csForSurviving = "for @ units surviving.";
+const string csForRound = "for Round #@.";
+const string csRemovedTeam = "Removed @ from Team @.";
+const string csNowPlaying = "Now playing @";
+const string csRules1 = "You have @ seconds to build an army of up to 30 units to do battle in the Arenas.";
+const string csRules2 = "Units are moved to an Arena at the start of each match. The last team standing wins the match.";
+const string csRules3 = "Each round you'll receive @ Food/Wood, @ Gold and @ Favor. This increases by @/@ each round.";
+const string csRules4 = "Players start with 1 Bolt and gets additional God Powers with each age.";
+const string csRules5 = "The game ends when a team wins @ rounds.";
+
+const string csSumPop = "** Units: Created: @ / Survived: @ (@) / Avg Per Round @";
+const string csSumHPs = "** HPs: Created: @ / Survived: @ (@) / Avg Per Round @";
+const string csAvgHPs = "** Unit Average: @ HPs";
+
+string tracks(int mode=0, int track=0) {
+  if (mode==1 && track==0)  return("music/fight/li'l drips");
+  if (mode==1 && track==1)  return("music/fight/oi, that pops!!!");
+  if (mode==1 && track==2)  return("music/fight/meatier shower");
+  if (mode==1 && track==3)  return("music/interface/gank sneakin'");
+  if (mode==1 && track==4)  return("music/interface/a cat named mittens");
+  if (mode==1 && track==5)  return("music/interface/ma'am...some other sunset");
+  if (mode==1 && track==6)  return("music/standard/the ballad of ace lebaron");
+  if (mode==1 && track==7)  return("music/standard/(fine layers of) slaysenflite");
+  if (mode==1 && track==8)  return("music/standard/adult swim");
+  if (mode==1 && track==9)  return("music/standard/chocolate outline");
+  if (mode==1 && track==10) return("music/standard/eat your potatoes");
+  if (mode==1 && track==11) return("music/standard/flavor cats (in the comfort zone)");
+  if (mode==1 && track==12) return("music/standard/hoping for real betterness");
+  if (mode==1 && track==13) return("music/standard/in a pile of its own good");
+  if (mode==1 && track==14) return("music/standard/never mind the slacks and bashers");
+  if (mode==1 && track==15) return("music/standard/suture self");
+  if (mode==1 && track==16) return("music/standard/behold the great science fi");
+
+  if (mode==2 && track==0)  return("music/culture/greek to me");
+  if (mode==2 && track==1)  return("music/culture/n. d. nile");
+  if (mode==2 && track==2)  return("music/fight/i wish i could throw shapes");
+  if (mode==2 && track==3)  return("music/fight/rot loaf");
+  if (mode==2 && track==4)  return("music/fight/the fire brigade");
+  if (mode==2 && track==5)  return("music/interface/if you can use a doorknob");
+  if (mode==2 && track==6)  return("music/culture/of norse not!");
+  if (mode==2 && track==7)  return("xpack/xmusic/hotlantis");
+  if (mode==2 && track==8)  return("xpack/xcinematics/tutorial/music");
+  if (mode==2 && track==9)  return("xpack/xcinematics/8_in/music");
+  return("music/culture/chinese");
+}
+
+// LIST CONSTANTS
 
 int gKbPlayer = 0;
 void kbPlayerStore() { gKbPlayer = xsGetContextPlayer(); }
 void kbPlayerRestore() { xsSetContextPlayer(gKbPlayer); }
 
-void debug(string msg="") { trChatSend(0, msg); }
+string iif(bool c=true, string t="", string f="") {
+  if (c) return(t); return(f);
+}
 
 int pct(int i=0, int d=0) {
   if (d==0) return(0.0);
@@ -78,13 +184,17 @@ int pct(int i=0, int d=0) {
 }
 
 string percent(int i=0, int d=0) {
-  if (d==0) return("!%");
-  return(pct(i,d) + "%");
+  if (d==0) return(cPS + cPS);
+  return(pct(i,d) + cPS);
 }
 
 int round(float v = 0.0) {
   int x = v + 0.5;
   return(x);
+}
+
+string str(int v=0) {
+  return(cES + v);
 }
 
 // LIST
@@ -144,7 +254,7 @@ string listSet(string list="", int at=1, string value="", string delim="|") {
 
 // INTEGER LIST
 string intAdd(string list="", int value=0, string delim="#") {
-  return(listAdd(list, value+"", delim));
+  return(listAdd(list, cES + value, delim));
 }
 
 int intGet(string list="", int at=1, string delim="#") {
@@ -156,8 +266,31 @@ int intLen(string list="", string delim="#") {
 }
 
 string intSet(string list="", int at=1, int value=0, string delim="#") {
-  return(listSet(list, at, value+"", delim));
+  return(listSet(list, at, cES + value, delim));
 }
+
+string print(string data="", string list="") {
+  int len = xsStringLength(data) - 1;
+  int cnt = listLen(list);
+  string out = cES;
+  for (pos=len;>=0) {
+    string chr = xsSubString(data, 1, pos);
+    if (chr==cAT) {
+      chr = listGet(list, cnt);
+      cnt--;
+    }
+    out = chr + out;
+  }
+  return(out);
+}
+
+string playerColor(int p=0, string msg="") { return(gClr1 + p + gClr2 + msg + gClr3); }
+void   alert(string msg="", int len=5000) { trMessageSetText(msg, len); }
+string alertf(string data="", string list="", int len=5000) { alert(print(data, list), len); }
+void   chat(string msg="") { trChatSend(0, msg); }
+string chatf(string data="", string list="") { chat(print(data, list)); }
+string chatColor(string msg="", int p=0) { chat(playerColor(p, msg)); }
+string chatColorf(string data="", string list="", int p=0) { chatColor(print(data, list), p); }
 
 // PUESDO DB - 3 TABLES WITH 12 ROWS OF 127 CHARS
 const int dbTab1 = 1; const int dbTab2 = 2; const int dbTab3 = 3;
@@ -237,7 +370,7 @@ int dbGetInt(int t=0, int r=0, int c=0) {
 }
 
 void dbSetInt(int t=0, int r=0, int c=0, int v=0) {
-  dbSetStr(t, r, c, ""+v);
+  dbSetStr(t, r, c, cES+v);
 }
 
 int dbAccum(int t=0, int r=0, int c=0, int v=1) {
@@ -266,21 +399,21 @@ string dbAdd2d(int t=0, int r=0, int c=0, int v=0) {
 
 // RESOURCE HELPERS
 string resInts(int f=0, int w=0, int g=0, int v=0) {
-  return(f + cDI + w + cDI + g + cDI + v);
+  return(f + cLB + w + cLB + g + cLB + v);
 }
 
 void resAward(int p=0, string why="", int f=0, int w=0, int g=0, int v=0, float r=1.0) {
   string ints = resInts(f*r, w*r, g*r, v*r);
-  string msg = cES;
+  gMsg = cES;
   for (pos=1;<=4) {
     string t = listGet(gResAll, pos);
     int i = intGet(ints, pos);
     if (i>0) {
-      msg = listAdd(msg, cES + i + cSP + t, cSL);
+      gMsg = listAdd(gMsg, cES + i + cSP + t, cSL);
       trPlayerGrantResources(p, t, i);
     }
   }
-  trChatSendToPlayer(0, p, "You were awarded" + cSP + msg + cSP + why);
+  trChatSendToPlayer(0, p, csGranted + cSP + gMsg + cSP + why);
 }
 
 void resBulk(int p=0, string list="", string ints="") {
@@ -311,32 +444,26 @@ void resSet(int p=0, string list="", int v=0) {
 }
 
 // GAME SPECIFIC CODE
-
 string cultureData(int p=0, int type=0) {
   int cul = kbGetCultureForPlayer(p);
   int civ = kbGetCivForPlayer(p);
+  string data = cES;
   if (type==cCivDataGodPowers) {
-    string all = "Bolt|Restoration|Bronze|Lightning Storm";
-    if (cul==cCultureGreek) return(listSet(all, 3, "Bronze"));
-    if (cul==cCultureEgyptian) return(listSet(all, 3, "Skeleton Power"));
-    if (cul==cCultureNorse) return(listSet(all, 3, "Flaming Weapons"));
-    if (cul==cCultureAtlantean) return(listSet(all, 3, "Geyser"));
-    if (cul==cCultureChinese) return(listSet(all, 3, "Geyser"));
+    data = listSet(gAgeUpPowers, 3, listGet(gAge3CivPowers, cul+1));
   } else if (type==cCivDataBuildings) {
-    if (cul==cCultureGreek) return("Temple|Market|Academy|Archery Range|Stable|Armory|Fortress");
-    if (cul==cCultureEgyptian) return("Temple|Market|Barracks|Barracks|Barracks|Armory|Migdol Stronghold");
-    if (civ==cCivThor) return("Temple|Market|LongHouse|LongHouse|LongHouse|Dwarf Foundry|Hill Fort");
-    if (cul==cCultureNorse) return("Temple|Market|LongHouse|LongHouse|LongHouse|Armory|Hill Fort");
-    if (cul==cCultureAtlantean) return("Temple|Market|Barracks Atlantean|Barracks Atlantean|Counter Building|Armory|Palace");
+    int armory = 1;
+    if (civ==cCivThor) armory++;
+    data = gCivTemple;
+    data = listAdd(data, gCivMarket);
+    data = listAdd(data, listGet(gCivArmy1, cul+1));
+    data = listAdd(data, listGet(gCivArmy2, cul+1));
+    data = listAdd(data, listGet(gCivArmy3, cul+1));
+    data = listAdd(data, listGet(gCivArmory, armory));
+    data = listAdd(data, listGet(gCivKeep, cul+1));
   }
-  return (cES);
+  return (data);
 }
 
-string powerForAge(int p=0, int age=0) {
-  return(listGet(cultureData(p, cCivDataGodPowers), age+1));
-}
-
-// LOCAL DB DEFINITION
 // TEAM SCHEMA
 const int dbTeam     = dbTab1;
 const int dbtPlayers = 1;
@@ -359,16 +486,15 @@ void   teamSetCurHPs(int r=1, int v=0) { dbSetInt(dbTeam, r, dbtCurHPs, v); }
 void   teamSetPop(int r=1, int v=0) { dbSetInt(dbTeam, r, dbtPop, v); }
 int    teamGetCurHPs(int r=1) { return(dbGetInt(dbTeam, r, dbtCurHPs)); }
 int    teamIncCurHPs(int r=1, int v=0) { return(dbAccum(dbTeam, r, dbtCurHPs, v)); }
-
 // PLAYER SCHEMA
-const int dbPlayer   = dbTab2;
-const int dbpAge     = 1;
-const int dbpPop     = 2;
-const int dbpHPs     = 3;
-const int dbpHPsTot  = 4;
-const int dbpPopTot  = 5;
-const int dbpHPsSrv  = 6;
-const int dbpPopSrv  = 7;
+const int dbPlayer  = dbTab2;
+const int dbpAge    = 1;
+const int dbpPop    = 2;
+const int dbpHPs    = 3;
+const int dbpHPsTot = 4;
+const int dbpPopTot = 5;
+const int dbpHPsSrv = 6;
+const int dbpPopSrv = 7;
 const int dbpBank   = 8;
 // PLAYER DATA ACCESS
 int    playerGetAge(int r=1) { return(dbGetInt(dbPlayer, r, dbpAge)); }
@@ -388,9 +514,8 @@ int    playerIncPopSrv(int r=1, int v=0) { return(dbAccum(dbPlayer, r, dbpPopSrv
 string playerGetBank(int r=1) { return(dbGetStr(dbPlayer, r, dbpBank)); }
 void   playerSetBank(int r=1, string v="") { dbSetStr(dbPlayer, r, dbpBank, v); }
 
-// PLAYER HELPERS
-string playerColor(int p=0, string msg="") {
-  return("<color={playerColor("+p+")}>"+msg+"</color>");
+string playerAgePower(int p=0, int age=0) {
+  return(listGet(cultureData(p, cCivDataGodPowers), age+1));
 }
 
 bool playerJustQuit(int p=0) {
@@ -405,9 +530,9 @@ void playerGameOver(int p=0) {
 }
 
 string playerGrantPower(int p=0, int age=0, int uses=0) {
-  string power = powerForAge(p, age);
-  if (uses>0) trChatSendToPlayer(0, p, "You have been granted" + cSP + power);
-  trTechGodPower(p, powerForAge(p, age), uses);
+  string power = playerAgePower(p, age);
+  if (uses>0) trChatSendToPlayer(0, p, csGranted + cSP + power);
+  trTechGodPower(p, playerAgePower(p, age), uses);
 }
 
 string playerName(int p=0) {
@@ -416,7 +541,7 @@ string playerName(int p=0) {
 
 void playerResPop() {
   for (p=1;<cNumberPlayers) {
-    resSet(p, "Favor", 0);
+    resSet(p, gFavor, 0);
     resBulk(p, gResAll, playerGetBank(p));
   }
 }
@@ -440,59 +565,159 @@ void playerAgedUp(int p=0, int age=0) {
   playerGrantPower(p, age, 1);
 }
 
-int buildTimeLeft() {
-  return (gBuildEnds-trTime());
-}
-
-void statsHide() {
-  for (t=1;<=gNumberTeams) {
-    trCounterAbort("Team" + t);
-    trCounterAbort("Roster" + t);
+bool gameBlockUnits(string list="") {
+  int len = listLen(list);
+  for (pos=1;<=len) {
+    string t = listGet(list, pos);
+    for (p=1;<cNumberPlayers) trForbidProtounit(p, t);
   }
 }
 
-void statsShow(bool health = false) {
-  statsHide();
-  for (i=1;<=gNumberTeams) {
-    int curHPs = teamGetCurHPs(i);
-    if (curHPs==0) continue;
-    string players = teamGetPlayers(i);
+int gameTimerLeft() {
+  return (gBuildEnds-trTime());
+}
+
+void gameMusic(int mode=0, int track=0) {
+  int event = -1;
+  if (mode==1) event = 420;
+  string file = tracks(mode, track);
+  chatf(csNowPlaying, file);
+  trSoundPlayDialog(file + gMP3, cN1, event, true, cES, cES);
+}
+
+void gameSound(string file="") {
+  trSoundPlayFN(file, cN1, -1, cES, cES);
+}
+
+void gameMusicBattle() {
+  gameMusic(1, gBattleSong);
+  gBattleSong = (gBattleSong + aiRandInt(3)) % 17;
+}
+
+void gameMusicBuild() {
+  trMusicStop();
+  gameMusic(2, gBuildSong);
+  gBuildSong = (gBuildSong + aiRandInt(3)) % 10;
+}
+
+void gameOver(int winner=0) {
+  for (t=1;<=gNumberTeams) {
+    string players = teamGetPlayers(t);
     int teamsize = intLen(players);
     if (teamsize==0) continue;
-    string team = curHPs + cSL + teamGetPop(i);
-    string play = cES;
-    string stats = cES;
-    string name = "T-" + players;
-    int timeout = 9;
-    int color = 0;
-    int alive = teamsize;
-    if (teamsize==1) {
-      color = intGet(players, 1);
+    string data = t + cPI + teamGetWins(t);
+    chatf(csTeamWonRounds, data);
+    for (pos=1;<=teamsize) {
+      int p = intGet(players, pos);
+      int totHPs = playerGetHPsTot(p);
+      int totPop = playerGetPopTot(p);
+      int srvHPs = playerGetHPsSrv(p);
+      int srvPop = playerGetPopSrv(p);
+      string pctPop = percent(srvPop, totPop);
+      string pctHPs = percent(srvHPs, totHPs);
+      int avgPop = round((totPop+0.0)/gRound);
+      int avgHPs = round((totHPs+0.0)/gRound);
+      int avgUnitHPs = totHPs/totPop;
+      chatColor(playerName(p) + cCL, p);
+      data = totPop + cPI + srvPop + cPI + pctPop + cPI + avgPop;
+      chatColorf(csSumPop, data, p);
+      data = totHPs + cPI + srvHPs + cPI + pctHPs + cPI + avgHPs;
+      chatColorf(csSumHPs, data, p);
+      chatColorf(csAvgHPs, str(avgUnitHPs), p);
+    }
+  }
+  chat(csThanks);
+  alert(csEgg);
+  trMusicStop();
+  gameSound(gCackle);
+  gameMusic(0);
+
+  for (p=1;<cNumberPlayers) {
+    if (kbGetPlayerTeam(p)==winner) {
+      trSetPlayerWon(p);
     } else {
+      playerGameOver(p);
+    }
+  }
+  xsDisableRule(gBattling);
+  //trEndGame();
+}
+
+int armyCnt(int p=0) {
+  kbPlayerStore();
+  xsSetContextPlayer(p);
+  int aCnt = kbArmyGetNumberUnits(kbArmyGetID(gArmy));
+  kbPlayerRestore();
+  return(aCnt);
+}
+
+int teamLast(int t=0) {
+  int alive = 0;
+  int last = 0;
+  for (p=1;<cNumberPlayers) {
+    if (kbGetPlayerTeam(p)!=t) continue;
+    if (armyCnt(p)==0) continue;
+    alive++;
+    last = p;
+  }
+  if (alive==1) return(last);
+  return(0);
+}
+
+string teamName(int t=0) {
+  string name = cES;
+  for (p=1;<cNumberPlayers) {
+    if (kbGetPlayerTeam(p)!=t) continue;
+    if (armyCnt(p)==0) continue;
+    name = name + xsSubString(playerName(p), 3, 0);
+  }
+  return(name);
+}
+
+string gameStatLine(int thp=0, int chp=0, int pop=0) {
+  return(percent(chp, thp) + cPI + chp + cPI + pop);
+}
+
+void gameStatsShow(bool health = false) {
+  int timeout = gameTimerLeft();
+  if (health) timeout = 9;
+  trChatHistoryClear();
+  for (t=1;<=gNumberTeams) {
+    int curHPs = teamGetCurHPs(t);
+    if (curHPs==0) continue;
+    string players = teamGetPlayers(t);
+    int teamsize = intLen(players);
+    if (teamsize==0) continue;
+    int p = intGet(players, 1);
+    int alive = p;
+    if (teamsize>1) alive = teamLast(t);
+    string roster = cES;
+    string data = cES;
+    string name = cES;
+    string stats = gameStatLine(teamGetHPs(t), curHPs, teamGetPop(t));
+    stats = stats + cPI + teamGetWins(t) + cSP + csWins;
+    if (alive!=0) { // 1 player team
+      name = playerName(alive);
+    } else { // 2 or more
       for (pos=1;<=teamsize) {
-        int p = intGet(players, pos);
+        p = intGet(players, pos);
         int pop = playerGetPop(p);
-        if (pop==0) {
-          alive--;
-          continue;
-        }
-        string data = playerGetHPs(p) + cSL + pop;
-        stats = listAdd(stats, p + ":" + data, cSP);
-        play = listAdd(play, playerColor(p, data));
+        if (pop==0) continue;
+        name = name + xsSubString(playerName(p), 3, 0);
+        data = gameStatLine(teamGetHPs(t), playerGetHPs(p), pop);
+        roster = listSet(roster, pos, data, cLB);
       }
-      if (alive==1) color = p;
     }
-    if (alive==1) name = playerName(color);
-    if (health) {
-      name = listAdd(name, percent(curHPs, teamGetHPs(i)));
-    } else {
-      timeout = buildTimeLeft();
-      name = listAdd(name, teamGetWins(i) + cSP + "Wins");
+    data = stats + cPI + name;
+    if (alive!=0) data = playerColor(alive, data);
+    chat(data);
+    for (pos=1;<=teamsize) {
+      data = listGet(roster, pos, cLB);
+      p = intGet(players, pos);
+      if (data==cES) continue;
+      data = cSP + cSP + cSP + listAdd(data, playerName(p));
+      chatColor(data, p);
     }
-    team = playerColor(color, team);
-    team = listAdd(stats, team + cDS + name);
-    trCounterAddTime("Team" + i, timeout, 1, team, -1);
-    if (alive>1) trCounterAddTime("Roster" + i, timeout, 1, play, -1);
   }
 }
 
@@ -503,152 +728,26 @@ void unitKill(int uid=0, int p=0) {
   trUnitDelete(true);
 }
 
-int unitQryRun(int p=0, int uid=0, int us=2) {
-  if (gQueryID==-1) gQueryID = kbUnitQueryCreate("gQueryID");
-  if (gQueryID==-1) return(-1);
-  kbUnitQueryResetData(gQueryID);
-  kbUnitQuerySetPlayerID(gQueryID, p);
-  kbUnitQuerySetUnitType(gQueryID, uid);
-  kbUnitQuerySetState(gQueryID, us);
-  return(kbUnitQueryExecute(gQueryID));
+void unitMove(int p=1, int aid=1, int pos=1, int x=0, int z=0) {
+  int uid = kbArmyGetUnitID(aid, pos);
+  string PUN = kbGetProtoUnitName(kbGetUnitBaseTypeID(uid));
+  kbArmyRemoveUnit(aid, uid);
+  unitKill(uid);
+  trArmyDispatch(p + cCO + aid, PUN, 1, x, 0, z, 1, false);
 }
 
 int unitQryRow(int r=0) {
   return(kbUnitQueryGetResult(gQueryID, r));
 }
 
-bool forbidProtounits(string list="") {
-  int len = listLen(list);
-  for (pos=1;<=len) {
-    string t = listGet(list, pos);
-    for (p=1;<cNumberPlayers) trForbidProtounit(p, t);
-  }
-}
-
-void mp3(string file="", int event=420) {
-  file = file + ".mp3";
-  //trChatSend(0, "Now Playing " + listGet(file, 3, "/"));
-  trSoundPlayDialog(file, "1", event, true, cES, cES);
-}
-
-void PlayBattleTrack(int eventID = -1) {
-  gTrackBattle = (gTrackBattle + aiRandInt(3)) % 17;
-  if      (gTrackBattle==0)  mp3("music/fight/li'l drips");
-  else if (gTrackBattle==1)  mp3("music/fight/oi, that pops!!!");
-  else if (gTrackBattle==2)  mp3("music/fight/meatier shower");
-  else if (gTrackBattle==3)  mp3("music/interface/gank sneakin'");
-  else if (gTrackBattle==4)  mp3("music/interface/a cat named mittens");
-  else if (gTrackBattle==5)  mp3("music/interface/ma'am...some other sunset");
-  else if (gTrackBattle==6)  mp3("music/standard/the ballad of ace lebaron");
-  else if (gTrackBattle==7)  mp3("music/standard/(fine layers of) slaysenflite");
-  else if (gTrackBattle==8)  mp3("music/standard/adult swim");
-  else if (gTrackBattle==9)  mp3("music/standard/chocolate outline");
-  else if (gTrackBattle==10) mp3("music/standard/eat your potatoes");
-  else if (gTrackBattle==11) mp3("music/standard/flavor cats (in the comfort zone)");
-  else if (gTrackBattle==12) mp3("music/standard/hoping for real betterness");
-  else if (gTrackBattle==13) mp3("music/standard/in a pile of its own good");
-  else if (gTrackBattle==14) mp3("music/standard/never mind the slacks and bashers");
-  else if (gTrackBattle==15) mp3("music/standard/suture self");
-  else if (gTrackBattle==16) mp3("music/standard/behold the great science fi");
-}
-
-void PlayBuildTrack() {
-  trMusicStop();
-  if      (gTrackBuild==0) mp3("music/culture/greek to me", -1);
-  else if (gTrackBuild==1) mp3("music/culture/n. d. nile", -1);
-  else if (gTrackBuild==2) mp3("music/fight/i wish i could throw shapes", -1);
-  else if (gTrackBuild==3) mp3("music/fight/rot loaf", -1);
-  else if (gTrackBuild==4) mp3("music/fight/the fire brigade", -1);
-  else if (gTrackBuild==5) mp3("music/interface/if you can use a doorknob", -1);
-  else if (gTrackBuild==6) mp3("music/culture/of norse not!", -1);
-  else if (gTrackBuild==7) mp3("xpack/xmusic/hotlantis", -1);
-  else if (gTrackBuild==8) mp3("xpack/xcinematics/tutorial/music", -1);
-  else if (gTrackBuild==9) mp3("xpack/xcinematics/8_in/music", -1);
-  gTrackBuild = (gTrackBuild + aiRandInt(3)) % 10;
-}
-
-void teamResize() {
-  int min = 12;
-  for (t=1;<=gNumberTeams) {
-    string players = teamGetPlayers(t);
-    int teamsize = intLen(players);
-    if (teamsize==0) continue;
-    string alive = cES;
-    for (pos=1;<=teamsize) {
-      int p = intGet(players, pos);
-      if (trPlayerActive(p)) {
-        alive = intAdd(alive, p);
-      } else if (playerJustQuit(p)) {
-        playerGameOver(p);
-        debug("Removed " + playerName(p) + " from team " + t);
-      }
-    }
-    teamSetPlayers(t, alive);
-    teamsize = intLen(alive);
-    if (teamsize==0) {
-      debug("Removed team " + t + " from the game.");
-    } else {
-      min = xsMin(min, teamsize);
-    }
-  }
-  gMinTeamCnt = min;
-}
-
-void winGame(int winner=0) {
-  trMusicStop();
-  for (i=1;<cNumberPlayers) {
-    trChatSend(0, playerColor(i,playerName(i) + ": "));
-    int totHPs = playerGetHPsTot(i);
-    int totPop = playerGetPopTot(i);
-    int srvHPs = playerGetHPsSrv(i);
-    int srvPop = playerGetPopSrv(i);
-    string pctPop = percent(srvPop, totPop);
-    string pctHPs = percent(srvHPs, totHPs);
-    int avgPop = round((totPop+0.0)/gRound);
-    int avgHPs = round((totHPs+0.0)/gRound);
-    int avgUnitHPs = totHPs/totPop;
-    string msg = "** Units: " + totPop + " Created / " + srvPop + " Survived (" + pctPop;
-    msg = msg + ") / " + avgPop + " Avg Per Round ";
-    trChatSend(0, playerColor(i,msg));
-    msg = "** Hitpoints: " + totHPs + " Created / " + srvHPs + " Survived (" + pctHPs;
-    msg = msg + ") / " + avgHPs + " Avg Per Round ";
-    trChatSend(0, playerColor(i, msg));
-    msg = "** Unit Average: " + avgUnitHPs + " hitpoints ";
-    trChatSend(0, playerColor(i, msg));
-  }
-  trChatSendSpoofed(0, "Thanks for playing BloodSport!");
-  for (i = 1;<=gNumberTeams) {
-    string players = teamGetPlayers(i);
-    msg = "Team " + i + " (" + players + ") won " + teamGetWins(i) + " rounds";
-    trChatSendSpoofed(i, msg);
-  }
-
-  trMessageSetText("****** BloodSport by TwentyOneScore ****** ", 6000);
-  trSoundPlayFN("/dialog/en/skul062.mp3", "1", -1, "", "");
-  mp3("/music/standard/behold the great science fi", -1);
-
-  for (i=1;<cNumberPlayers) {
-    if (kbGetPlayerTeam(i)==winner) {
-      trSetPlayerWon(i);
-    } else {
-      playerGameOver(i);
-    }
-  }
-  xsDisableRule("_battling");
-  //trEndGame();
-}
-
-void winRound(int team=0) {
-  int wins = teamGetWins(team);
-  string players = teamGetPlayers(team);
-  string msg = "Team" + cSP + players + " has won " + wins + " round";
-  if (wins>1) msg = msg + "s";
-  trChatSend(0, msg);
-  msg = "";
-  for (i=1;<cNumberPlayers) {
-    if (kbGetPlayerTeam(i)==team) msg = listAdd(msg, playerName(i), " and ");
-  }
-  trMessageSetText("Congratulations " + msg + "!", 6000);
+int unitQryRun(int p=0, int uid=0, int us=2) {
+  if (gQueryID==-1) gQueryID = kbUnitQueryCreate(gGameID);
+  if (gQueryID==-1) return(-1);
+  kbUnitQueryResetData(gQueryID);
+  kbUnitQuerySetPlayerID(gQueryID, p);
+  kbUnitQuerySetUnitType(gQueryID, uid);
+  kbUnitQuerySetState(gQueryID, us);
+  return(kbUnitQueryExecute(gQueryID));
 }
 
 int armyClearDead(int aid = 0) {
@@ -658,17 +757,17 @@ int armyClearDead(int aid = 0) {
   for (j=1;<=aCnt) {
     int uid = kbArmyGetUnitID(aid, aCnt-j);
     uHPs = kbUnitGetCurrentHitpoints(uid);
-    if (uHPs==0) kbArmyRemoveUnit(aid, uid);
+    if (uHPs<1) kbArmyRemoveUnit(aid, uid);
     aHPs = aHPs + uHPs;
   }
   return(aHPs);
 }
 
-void refundSurvivors() {
+void armyRefund() {
   kbPlayerStore();
   for (p=1;<cNumberPlayers) {
     xsSetContextPlayer(p);
-    int aid = kbArmyGetID("armyIn" + p);
+    int aid = kbArmyGetID(gArmy);
     int aHPs = armyClearDead(aid);
     int aCnt = kbArmyGetNumberUnits(aid);
     playerIncHPsSrv(p, aHPs);
@@ -681,106 +780,75 @@ void refundSurvivors() {
       unitKill(uid);
     }
     if (aCnt>0) {
-      string msg = "for" + cSP + aCnt + cSP + "units surviving.";
-      resAward(p, msg, bonus, bonus, bonus, aCnt);
+      gMsg = print(csForSurviving, str(aCnt));
+      resAward(p, gMsg, bonus, bonus, bonus, aCnt);
     }
   }
   kbPlayerRestore();
 }
 
-void updateResources() {
-  for (t=1;<=gNumberTeams) {
-    string players = teamGetPlayers(t);
-    int teamsize = intLen(players);
-    float ratio = gMinTeamCnt / teamsize;
-    for (pos=1;<=teamsize) {
-      int p = intGet(players, pos);
-      resAward(p, "for round #" + gRound, gBuildRes, gBuildRes * 1.5, gBuildRes, gBuildFav);
-    }
-  }
-  gBuildRes = gBuildRes + 50;
-  gBuildFav = gBuildFav + 5;
-}
-
-void updateTech() {
+void battleOver(int team=0) {
+  int wins = teamGetWins(team);
+  string players = teamGetPlayers(team);
+  string names = cES;
   for (p=1;<cNumberPlayers) {
-    if (gRound==3) trTechSetStatus(p, cTechAge3Aphrodite, cTechStatusAvailable);
-    if (gRound==5) trTechSetStatus(p, cTechAge4Artemis, cTechStatusAvailable);
-    if ((gRound % 6)==0) playerGrantPower(p, cAge1, 1);
-    if ((gRound % 8)==0) playerGrantPower(p, cAge2, 1);
+    if (kbGetPlayerTeam(p)==team) names = listAdd(names, playerName(p), csAnd);
   }
+  alertf(csCongrats, names);
 }
 
 bool checkVictory(int winner=0) {
   if (teamIncWins(winner)==gGameWins) {
-    winGame(winner);
+    gameOver(winner);
     return(true);
   }
-  winRound(winner);
+  battleOver(winner);
   return(false);
 }
 
 void battleFinish() {
-  statsHide();
   playerResPop();
-  refundSurvivors();
+  armyRefund();
 }
 
 int battleUpdate() {
   int teams = 0;
   int winner = 0;
   kbPlayerStore();
-  for (i=1;<=gNumberTeams) {
-    teamSetCurHPs(i, 0);
-    teamSetPop(i, 0);
-    if (RoundFlag) teamSetHPs(i, 0);
-    string players = teamGetPlayers(i);
+  for (t=1;<=gNumberTeams) {
+    teamSetCurHPs(t, 0);
+    teamSetPop(t, 0);
+    string players = teamGetPlayers(t);
     int teamsize = intLen(players);
     if (teamsize==0) continue;
     for (pos=1;<=teamsize) {
       int p = intGet(players, pos);
       if (trPlayerActive(p)) {
         xsSetContextPlayer(p);
-        int aid = kbArmyGetID("armyIn" + p);
+        int aid = kbArmyGetID(gArmy);
         int aHPs = armyClearDead(aid);
         int aCnt = kbArmyGetNumberUnits(aid);
         playerSetPop(p, aCnt);
         playerSetHPs(p, aHPs);
-        if (aCnt>0) {
-          if (RoundFlag) {
-            playerIncPopTot(p, aCnt);
-            playerIncHPsTot(p, aHPs);
-            teamIncHPs(i, aHPs);
-          }
-          teamIncPop(i, aCnt);
-          teamIncCurHPs(i, aHPs);
-        }
+        teamIncPop(t, aCnt);
+        teamIncCurHPs(t, aHPs);
       }
     }
-    if (teamGetPop(i)>0) {
+    if (teamGetPop(t)>0) {
       teams++;
-      winner = i;
+      winner = t;
     }
   }
   kbPlayerRestore();
-  statsShow(true);
-  RoundFlag = false;
+  gameStatsShow(true);
   if (teams>1) return(0);
 
   return(winner);
 }
 
-void moveSolider(int p=1, int aid=1, int pos=1, int x=0, int z=0) {
-  int uid = kbArmyGetUnitID(aid, pos);
-  string PUN = kbGetProtoUnitName(kbGetUnitBaseTypeID(uid));
-  kbArmyRemoveUnit(aid, uid);
-  unitKill(uid);
-  trArmyDispatch(p + "," + aid, PUN, 1, x, 0, z, 1, false);
-}
-
 void emptyBuildings(int p=0) {
   for (pos=0;<8) {
-    int aid = kbArmyGetID("Bldg" + pos);
+    int aid = kbArmyGetID(gArmy + pos);
     int uid = kbArmyGetUnitID(aid, 0);
     trUnitSelectClear();
     trUnitSelectByID(uid);
@@ -789,11 +857,10 @@ void emptyBuildings(int p=0) {
 }
 
 void battleBegin() {
-  trSetLighting("Default", 3.0);
-  trSoundPlayFN("battlecry4.wav", "1", 420, "", "");
+  trSetLighting(gBattleSky, 3.0);
+  gameSound(gBattleCry);
   playerResPush();
   emptyBuildings();
-
   int PlacedTop = 0;
   int PlacedBot = 2;
   int field = ((gRound-1) % 3) * 80;
@@ -803,8 +870,9 @@ void battleBegin() {
   int spacing = 0;
   if (gNumberTeams >= 4) spacing = 1; else spacing = 2;
   kbPlayerStore();
-  for (i=1;<=gNumberTeams) {
-    string players = teamGetPlayers(i);
+  for (t=1;<=gNumberTeams) {
+    teamSetHPs(t, 0);
+    string players = teamGetPlayers(t);
     int teamsize = intLen(players);
     if (teamsize==0) continue;
     for (pos=1;<=teamsize) {
@@ -813,40 +881,42 @@ void battleBegin() {
       if (trPlayerActive(p)) {
         xsSetContextPlayer(p);
         emptyBuildings(p);
+        int aid = kbArmyGetID(gArmy);
+        int aHPs = armyClearDead(aid);
+        int aCnt = kbArmyGetNumberUnits(aid);
+        playerIncPopTot(p, aCnt);
+        playerIncHPsTot(p, aHPs);
+        teamIncHPs(t, aHPs);
         if (slot>12) slot = (slot % 12) + 1;
-        int aid = kbArmyGetID("armyIn" + p);
-        int aCnt = kbArmyGetNumberUnits(aid)-1;
-        RoundFlag = true;
-        for (j=aCnt;>=0) {
+        for (j=(aCnt-1);>=0) {
           if (gNumberTeams==2) {
             if (kbGetPlayerTeam(p)==1)
-              moveSolider(p, aid, j, field + 25, 170);
+              unitMove(p, aid, j, field + 25, 170);
             else if (kbGetPlayerTeam(p)==2)
-              moveSolider(p, aid, j, field + 65, 80);
+              unitMove(p, aid, j, field + 65, 80);
           } else {
             if (slot >= 1 && slot <= 3) {
               offset = slot-1;
-              moveSolider(p, aid, j, field + 25 + (offset*20), 170);
+              unitMove(p, aid, j, field + 25 + (offset*20), 170);
             } else if (slot >= 4 && slot <= 6) {
               offset = 6-slot;
-              moveSolider(p, aid, j, field + 70, 110 + (offset*20));
+              unitMove(p, aid, j, field + 70, 110 + (offset*20));
             } else if (slot >= 7 && slot <= 9) {
               offset = 9-slot;
-              moveSolider(p, aid, j, field + 25 + (offset*20), 80);
+              unitMove(p, aid, j, field + 25 + (offset*20), 80);
             } else if (slot >= 10 && slot <= 12) {
               offset = slot-10;
-              moveSolider(p, aid, j, field + 20, 110 + (offset*20));
+              unitMove(p, aid, j, field + 20, 110 + (offset*20));
             }
           }
         }
         trUnitSelectClear();
-        trArmySelect(p + "," + aid);
+        trArmySelect(p + cCO + aid);
         trUnitMoveToPoint(field + 45, 0, 122.5);
       }
       slot++;
     }
   }
-
   kbPlayerRestore();
 }
 
@@ -861,10 +931,9 @@ void buildArmy() {
       xsSetContextPlayer(p);
       int team = kbGetPlayerTeam(p);
       int teamsize = intLen(teamGetPlayers(team));
-      float ratio = teamsize;
-      ratio = gMinTeamCnt / ratio;
+      float ratio = gMinTeamCnt / teamsize;
       int MaxUnits = 30 * ratio;
-      int aid = kbArmyGetID("armyIn" + p);
+      int aid = kbArmyGetID(gArmy);
       int aHPs = armyClearDead(aid);
       int aCnt = kbArmyGetNumberUnits(aid);
       if (aCnt<MaxUnits) {
@@ -886,21 +955,73 @@ void buildArmy() {
       teamIncHPs(team, aHPs);
     }
   }
-  for (t=1;<=gNumberTeams) teamSetCurHPs(t, teamGetHPs(team));
+  for (t=1;<=gNumberTeams) teamSetCurHPs(t, teamGetHPs(t));
   kbPlayerRestore();
-  statsShow();
+}
+
+void buildTeams() {
+  int min = 12;
+  for (t=1;<=gNumberTeams) {
+    string players = teamGetPlayers(t);
+    int teamsize = intLen(players);
+    if (teamsize==0) continue;
+    string alive = cES;
+    for (pos=1;<=teamsize) {
+      int p = intGet(players, pos);
+      if (trPlayerActive(p)) {
+        alive = intAdd(alive, p);
+      } else if (playerJustQuit(p)) {
+        playerGameOver(p);
+        gMsg = listAdd(playerName(p), str(t));
+        chatf(csRemovedTeam, gMsg);
+      }
+    }
+    teamSetPlayers(t, alive);
+    teamsize = intLen(alive);
+    if (teamsize==0) {
+      chatf(csRemovedGame, str(t));
+    } else {
+      min = xsMin(min, teamsize);
+    }
+  }
+  gMinTeamCnt = min;
+}
+
+void buildResources() {
+  for (t=1;<=gNumberTeams) {
+    string players = teamGetPlayers(t);
+    int teamsize = intLen(players);
+    float ratio = gMinTeamCnt / teamsize;
+    for (pos=1;<=teamsize) {
+      int p = intGet(players, pos);
+      gMsg = print(csForRound, str(gRound));
+      resAward(p, gMsg, gResRound, gResRound * 1.5, gResRound, gFavRound, ratio);
+    }
+  }
+  gResRound = gResRound + gResInc;
+  gFavRound = gFavRound + gFavInc;
+}
+
+void buildTechUpdate() {
+  for (p=1;<cNumberPlayers) {
+    if (gRound==3) trTechSetStatus(p, cTechAge3Aphrodite, cTechStatusAvailable);
+    if (gRound==5) trTechSetStatus(p, cTechAge4Artemis, cTechStatusAvailable);
+    if ((gRound % 6)==0) playerGrantPower(p, cAge1, 1);
+    if ((gRound % 8)==0) playerGrantPower(p, cAge2, 1);
+  }
 }
 
 void buildBegin() {
   gBuildEnds = trTime() + gBuildTime;
   gRound++;
-  teamResize();
-  updateResources();
-  updateTech();
-  trSoundPlayFN("sentinelbirth.wav", "1", -1, cES, cES);
-  trSetLighting("Anatolia", 5.0);
-  PlayBuildTrack();
-  trCounterAddTime("countdown", buildTimeLeft(), 1, "Round #" + gRound + " Starts In", -1);
+  buildTeams();
+  buildResources();
+  buildTechUpdate();
+  gameSound(gBuildCry);
+  trSetLighting(gBuildSky, 5.0);
+  gameMusicBuild();
+  gMsg = print(csRoundStarts, str(gRound));
+  trCounterAddTime(gGameID, gameTimerLeft(), 1, gMsg, -1);
 }
 
 void setupOptions() {
@@ -912,7 +1033,7 @@ void setupOptions() {
     speed = 10;
     gBuildTime = 45;
   }
-  if (vcGetGameplayMode()==cGameModeDeathmatch) gBuildRes = 1000;
+  if (vcGetGameplayMode()==cGameModeDeathmatch) gResRound = 1000;
   trRateResearch(speed);
   trRateTrain(speed);
   gGameWins = 2;
@@ -931,32 +1052,32 @@ void setupTeams() {
 }
 
 void setupTechTree() {
-  for (i=1;<cNumberPlayers) {
-    trPlayerTechTreeEnabledGodPowers(i, false);
-    for (j = 0;<=41) trTechSetStatus(i, cTechRelicEyeofHorus, cTechStatusActive);
-    for (j = 0;<=10) trTechSetStatus(i, cTechRelicNoseoftheSphinx, cTechStatusActive);
-    trTechSetStatus(i, cTechAge3Aphrodite, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechAge4Artemis, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechOdinsFirstRavens, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechOdinsRavenRespawn, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechStartingUnitsAtlantean, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechStartingUnitsEgyptian, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechStartingUnitsGreek, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechStartingUnitsNorse, cTechStatusUnobtainable);
-    trTechSetStatus(i, cTechStartingUnitsThor, cTechStatusUnobtainable);
+  for (p=1;<cNumberPlayers) {
+    trPlayerTechTreeEnabledGodPowers(p, false);
+    for (j = 0;<=41) trTechSetStatus(p, cTechRelicEyeofHorus, cTechStatusActive);
+    for (j = 0;<=10) trTechSetStatus(p, cTechRelicNoseoftheSphinx, cTechStatusActive);
+    trTechSetStatus(p, cTechAge3Aphrodite, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechAge4Artemis, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechOdinsFirstRavens, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechOdinsRavenRespawn, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechStartingUnitsAtlantean, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechStartingUnitsEgyptian, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechStartingUnitsGreek, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechStartingUnitsNorse, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechStartingUnitsThor, cTechStatusUnobtainable);
   }
 }
 
 void setupProtoUnits() {
-  forbidProtounits("Shade of Hades|Shade");
-  forbidProtounits("Helepolis|Siege Tower");
-  forbidProtounits("Pegasus|Roc|flying medic|Stymphalian Bird|Vermilion Bird");
+  gameBlockUnits(gBlockUnits);
+  gameBlockUnits(gBlockGarrison);
+  gameBlockUnits(gBlockFlying);
 }
 
 void setupGodPowers() {
   for (p=1;<cNumberPlayers) {
-    trPlayerSetDiplomacy(p, 0, "enemy");
-    trPlayerSetDiplomacy(0, p, "enemy");
+    trPlayerSetDiplomacy(p, 0, gEnemy);
+    trPlayerSetDiplomacy(0, p, gEnemy);
     if (trPlayerActive(p)) {
       trPlayerKillAllGodPowers(p);
       for (age=cAge1;<=cAge4) playerGrantPower(p, age, 0);
@@ -971,22 +1092,26 @@ void setupBuildings() {
     xsSetContextPlayer(p);
     string buildings = cultureData(p, cCivDataBuildings);
     for (pos=1;<=7) {
-      trArmySelect(p + "," + kbArmyGetID("Bldg" + pos));
+      trArmySelect(p + cCO + kbArmyGetID(gArmy + pos));
       trUnitChangeProtoUnit(listGet(buildings, pos));
     }
   }
   kbPlayerRestore();
 }
 
-void setupMap() {
-  trMessageSetText("**** BloodSport Version 4.0 by TwentyOneScore ****", 4000);
-  trEventSetHandler(420, "PlayBattleTrack");
-  gTrackBattle = (gTrackBattle + aiRandInt(17)) % 15;
-  setupBuildings();
-  trTechGodPower(0, "Healing Spring", 1);
+void setupHealingString() {
+  trTechGodPower(0, gHealString, 1);
   trUnitSelectClear();
-  trUnitSelect("default");
-  trTechInvokeGodPower(0, "Healing Spring", vector(45, 0, 122.5), vector(0, 0, 0));
+  trUnitSelect(gGaiaUnit);
+  trTechInvokeGodPower(0, gHealString, vector(45, 0, 122.5), vector(0, 0, 0));
+}
+
+void setupMap() {
+  alert(csEgg);
+  trEventSetHandler(420, gMusicEvent);
+  gBattleSong = aiRandInt(17);
+  setupBuildings();
+  setupHealingString();
 }
 
 bool notYet(int when=0, float start=0.0) {
@@ -1002,38 +1127,41 @@ rule _setup highFrequency active {
   setupMap();
   buildBegin();
   xsDisableSelf();
-  xsEnableRule("_building");
+  xsEnableRule(gBuilding);
 }
 
 rule _building minInterval 2 inactive {
   if (notYet(2, cActivationTime)) return;
-  kbLookAtAllUnitsOnMap(); // TESTING FOR AI
+  kbLookAtAllUnitsOnMap();
   buildArmy();
-  if (buildTimeLeft()>0) return;
+  if (gameTimerLeft()>0) {
+    gameStatsShow();
+    return;
+  }
   battleBegin();
   xsDisableSelf();
-  xsEnableRule("_battling");
+  xsEnableRule(gBattling);
 }
 
 rule _battling minInterval 2 inactive {
   if (notYet(2, cActivationTime)) return;
-  kbLookAtAllUnitsOnMap(); // TESTING FOR AI
+  kbLookAtAllUnitsOnMap();
   int winner = battleUpdate();
   if (winner==0) return;
   battleFinish();
   if (checkVictory(winner)) return;
   buildBegin();
   xsDisableSelf();
-  xsEnableRule("_building");
+  xsEnableRule(gBuilding);
 }
 
 rule _prevent_building minInterval 3 active {
   if (notYet(3, cActivationTime)) return;
   kbPlayerStore();
-  for (i=1;<cNumberPlayers) {
-    if (trPlayerActive(i)) {
-      xsSetContextPlayer(i);
-      int myCnt = unitQryRun(i, cUnitTypeBuilding, cUnitStateBuilding);
+  for (p=1;<cNumberPlayers) {
+    if (trPlayerActive(p)) {
+      xsSetContextPlayer(p);
+      int myCnt = unitQryRun(p, cUnitTypeBuilding, cUnitStateBuilding);
       for (j=0;<myCnt) unitKill(unitQryRow(j));
     }
   }
@@ -1041,20 +1169,24 @@ rule _prevent_building minInterval 3 active {
 }
 
 rule _instructions minInterval 6 active {
-  int x = trTime()-cActivationTime;
-  if (x<6) return;
-  if (x/6==1)
-    trMessageSetText("You have " + gBuildTime + " seconds to build a team of up to 30 units to do " + "battle in the Arenas.", 5000);
-  else if (x/6==2)
-    trMessageSetText("Units are moved to an Arena at the start of each match. " + "The last team standing wins the match.", 6000);
-  else if (x/6==3)
-    trMessageSetText("Each round you'll receive " + gBuildRes + " Food & Wood/" + gBuildRes*1.5 + " Gold/" + gBuildFav + " Favor. This increases by 50/5 each round.", 6000);
-  else if (x/6==4)
-    trMessageSetText("Players start with 1 Bolt and gets another and an additional God Power for each age.", 5000);
-  else {
-    trMessageSetText("The game ends when a team wins " + gGameWins + " rounds.", 5000);
+  if (notYet(6, cActivationTime)) return;
+  if (gInstr==1) {
+    alertf(csRules1, str(gBuildTime));
+  } else if (gInstr==2) {
+    alert(csRules2);
+  } else if (gInstr==3) {
+    gMsg = listAdd(str(gResRound), str(gResRound*1.5));
+    gMsg = listAdd(gMsg, str(gFavRound));
+    gMsg = listAdd(gMsg, str(gResInc));
+    gMsg = listAdd(gMsg, str(gFavInc));
+    alertf(csRules3, gMsg);
+  } else if (gInstr==4) {
+    alert(csRules4);
+  } else {
+    alertf(csRules5, str(gGameWins));
     xsDisableSelf();
   }
+  gInstr++;
 }
 
 rule _ageup minInterval 1 active {
