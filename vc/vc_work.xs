@@ -18,12 +18,19 @@ int gResInc = 50;
 int gResRound = 1200;
 int gRound = 0;
 int gArena = 0;
+int gRoundInit = 0;
+
 float gMinTeamCnt = 1.0;
 string gMsg = "";
 string gArenaXZ = "";
 string gPlayerXZ = "";
 string gArenaBIDs = "";
 string gPlayerBIDs = "";
+string gArenasInit = "";
+string gActiveBIDs = "";
+
+int gRelicTech = 0;
+int gRelicID = 0;
 
 float gArenaRadius = 0;
 
@@ -47,31 +54,56 @@ const int cTechAge3Aphrodite = 97;
 const int cTechAge4Artemis = 99;
 const int cTechOdinsFirstRavens = 335;
 const int cTechOdinsRavenRespawn = 171;
-const int cTechRelicEyeofHorus = 194;
-const int cTechRelicNoseoftheSphinx = 205;
 const int cTechStartingUnitsAtlantean = 394;
 const int cTechStartingUnitsEgyptian = 145;
 const int cTechStartingUnitsGreek = 144;
 const int cTechStartingUnitsNorse = 143;
-const int cTechRelicPeltofArgus = 369;
 const int cTechStartingUnitsThor = 379;
 const int cTechSecretsoftheTitans = 443;
 const int cTechStartingUnitsChinese = 510;
 const int cTechPharaohRespawn = 142;
+const int cTechSetAge1Critter = 380;
+
+const int cTechStatusObtainable = 1;
 const int cTechStatusActive = 4;
 const int cTechStatusAvailable = 2;
 const int cTechStatusUnobtainable = 0;
-const int cUnitTypeHelepolis = 510;
+
+const int cUnitHealingSpring = 576;
+const int cUnitPlentyVault = 586;
 const int cUnitTypeMilitary = 951;
-const int cUnitTypeShade = 574;
-const int cUnitTypeShadeofHades = 597;
-const int cUnitTypeSiegeTower = 380;
 const int cUnitTypeUnit = 935;
 const int cUnitTypeBuilding = 937;
 const int cUnitStatLOS = 2;
 const int cUnitStateAlive = 2;
 const int cUnitStateBuilding = 1;
 const int cUnitStateAny = 255;
+
+const int cTechRelicEyeofHorus = 194;
+const int cTechRelicNoseoftheSphinx = 205;
+const int cTechRelicPeltofArgus = 369;
+const int cTechRelicBowofArtemis = 203;
+const int cTechRelicWedjatEye = 204;
+const int cTechRelicToothedArrows = 209;
+const int cTechRelicWandofGambantein = 210;
+const int cTechRelicEyeofOrnlu = 264;
+const int cTechRelicTuskoftheIronBoar = 265;
+const int cTechRelicPandorasBox = 293;
+const int cTechRelicCanopicJarofImsety = 331;
+const int cTechRelicGirdleofHippolyta = 352;
+const int cTechRelicBootsofKickEverything = 367;
+const int cTechRelicAnvilofHephaestus = 368;
+const int cTechRelicCatoblepasScales = 372;
+const int cTechRelicOdinsSpear = 200;
+const int cTechRelicMithrilHorseshoes = 202;
+const int cTechRelicTriosBow = 250;
+const int cTechRelicArmorofAchilles = 252;
+const int cTechRelicHerasThundercloudShawl = 294;
+const int cTechRelicTailoftheCerberus = 373;
+const int cTechRelicKhopeshofHorus = 375;
+const int cTechFlamingWeaponsActive = 224;
+const int cTechJourneyActive = 549;
+const int cTechEclipseActive = 377;
 
 // STRING CONSTANTS
 const string cES = "";
@@ -100,14 +132,16 @@ const string gResAll = "food|wood|gold|favor";
 const string gResFWG = "food|wood|gold";
 const string gFavor = "favor";
 const string gMP3 = ".mp3";
-const string gBattleSky = "Default";
+const string gBattleSky = "Dawn|Dusk|Default|Dusk2|Hades2|fimbulwinter|Night2";
 const string gBattleCry = "battlecry4.wav";
 const string gBuildCry = "sentinelbirth.wav";
 const string gBuildSky = "Anatolia";
 const string gEnemy = "enemy";
+const string gConvert = "find.wav";
 const string gMusicEvent = "gameMusicBattle";
 const string gDefault = "default";
 const string gHealString = "Healing Spring";
+const string gPlenty = "Plenty";
 const string gCackle = "/dialog/en/skul062.mp3";
 const string gRevealer = "Revealer";
 const string gCenters = "Centers";
@@ -123,7 +157,9 @@ const string gCivKeep = "Fortress|Migdol Stronghold|Hill Fort|Palace|Castle";
 const string gAgeUpPowers = "Bolt|Restoration|Bolt|Lightning Storm|Curse";
 const string gAge3CivPowers = "Bronze|Skeleton Power|Flaming Weapons|Bronze|Geyser";
 
-const string gBlockUnits = "Shade of Hades|Shade|Oracle Scout|Scout";
+const string gRelicsArena = "368#203#331#293#210#204|0|202#250#209#294|0|264#200#352#265#252|0|373#375#367";
+
+const string gBlockUnits = "Shade of Hades|Shade|Oracle Scout|Scout|Scout Chinese|Mercenary|Mercenary Cavalry";
 const string gBlockGarrison = "Helepolis|Siege Tower";
 const string gBlockFlying = "Pegasus|Roc|flying medic|Stymphalian Bird|Vermilion Bird";
 
@@ -305,6 +341,10 @@ int intGet(string list="", int at=1, string delim="#") {
 
 int intLen(string list="", string delim="#") {
   return(listLen(list, delim));
+}
+
+int intRandom(string list="", string delim="#") {
+  return(xsStringToInt(listRandom(list, delim)));
 }
 
 string intSet(string list="", int at=1, int value=0, string delim="#") {
@@ -584,7 +624,6 @@ void playerGameOver(int p=0) {
 string playerGrantPower(int p=0, int age=0, int uses=0) {
   string power = playerAgePower(p, age);
   if (uses>0) trChatSendToPlayer(0, p, csGranted + cSP + power);
-//  trTechGodPower(p, playerAgePower(p, age), uses);
   trTechGodPowerAtPosition(p, playerAgePower(p, age), uses, age+1);
 }
 
@@ -734,7 +773,7 @@ string gameStatLine(int thp=0, int chp=0, int pop=0) {
 void gameStatsShow(bool health = false) {
   int timeout = gameTimerLeft();
   if (health) timeout = 9;
-  //trChatHistoryClear();
+  trChatHistoryClear();
   for (t=1;<=gNumberTeams) {
     int curHPs = teamGetCurHPs(t);
     if (curHPs==0) continue;
@@ -860,14 +899,66 @@ void armyRefund() {
   kbPlayerRestore();
 }
 
-void battleOver(int team=0) {
+string unitDispatch(string unit="", vector v=vector(0,0,0)) {
+  string bid = cES+trGetNextUnitScenarioNameNumber();
+  trArmyDispatch("0,0", unit, 1, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, false);
+  trUnitSelectClear();
+  trUnitSelect(bid);
+  trUnitTeleport(xsVectorGetX(v), 0, xsVectorGetZ(v));
+  return(bid);
+}
+
+void arenaRelicSet() {
+  string techs = listGet(gRelicsArena, gArena);
+  if (techs=="0") return;
+  gRelicTech = intRandom(techs);
+  string bid = listGet(gActiveBIDs, gArena);
+  vector v = arenaVec(gArena);
+  trUnitSelectClear();
+  trUnitSelect(bid);
+  trUnitConvert(0);
+  trSetRelicType(gRelicTech);
+  trUnitTeleport(xsVectorGetX(v), 0, xsVectorGetZ(v));
+}
+
+void arenaRelicCreate() {
+  string bid = unitDispatch("Relic", arenaVec(gArena));
+  if (gArena!=1) trSetSelectedScale(2,4,2);
+  gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
+}
+
+void arenaRelicAward(int team=0) {
+  if (gArena!=1) return;
+  for (p=1;<cNumberPlayers) {
+    if (kbGetPlayerTeam(p)==team) {
+      string bid = unitDispatch("Relic", playerVec(p));
+      trSetRelicType(gRelicTech);
+    }
+  }
+}
+
+void arenaEnd() {
+  xsDisableRule("_arenaHB"+gArena);
+  for (p=1;<cNumberPlayers) {
+    if (trTechStatusActive(p, gRelicTech)) trTechSetStatus(p, gRelicTech, cTechStatusUnobtainable);
+    if (trTechStatusActive(p, cTechEclipseActive)) trTechSetStatus(p, cTechEclipseActive, cTechStatusUnobtainable);
+  }
+  arenaRelicSet();
+}
+
+void arenaBegin() {
+  gRoundInit = 0;
+  xsEnableRule("_arenaHB"+gArena);
+}
+
+void battleWon(int team=0) {
   int wins = teamGetWins(team);
-  string players = teamGetPlayers(team);
   string names = cES;
   for (p=1;<cNumberPlayers) {
     if (kbGetPlayerTeam(p)==team) names = listAdd(names, playerName(p), csAnd);
   }
   alertf(csCongrats, names);
+  arenaRelicAward(team);
 }
 
 bool checkVictory(int winner=0) {
@@ -875,13 +966,8 @@ bool checkVictory(int winner=0) {
     gameOver(winner);
     return(true);
   }
-  battleOver(winner);
+  battleWon(winner);
   return(false);
-}
-
-void battleFinish() {
-  playerResPop();
-  armyRefund();
 }
 
 void battleCowards(int aid=0) {
@@ -899,7 +985,6 @@ void battleCowards(int aid=0) {
       vector up = kbUnitGetPosition(uid);
       trDamageUnit(amt);
       trUnitHighlight(2);
-      chat("unitDistance = " + dist + " are = " + gArenaRadius + " dam " + amt);
       trUnitCreate(gDamageEffect, gDefault, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, 1);
     }
   }
@@ -950,13 +1035,171 @@ void emptyBuildings(int p=0) {
   }
 }
 
+void revealArea(vector v=vector(0,0,0), int p=0) {
+  trUnitCreate(gRevealer, gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
+}
+
+bool initArena() {
+  if (intGet(gArenasInit, gArena)==1) return(false);
+  revealArea(arenaVec(gArena), 0);
+  gArenasInit = intSet(gArenasInit, gArena, 1);
+  return(true);
+}
+
+void initArenaLava() {
+  if (initArena()) {
+    unitDispatch("Tartarian Gate", arenaVec(gArena));
+    trSetSelectedScale(1,.5,1);
+    arenaRelicCreate();
+    arenaRelicSet();
+  }
+}
+
+void initArenaHealing() {
+  if (initArena()) {
+    trUnitSelectClear();
+    trUnitSelect(gDefault);
+    trTechInvokeGodPower(0, gHealString, arenaVec(2), vector(0, 0, 0));
+  }
+}
+
+void initArenaResources() {
+  if (initArena()) {
+    string bid = unitDispatch("Berry Bush", arenaVec(gArena));
+    trSetSelectedScale(1,2,1);
+    gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
+  }
+}
+
+void initArenaMystic() {
+  for (p=1;<cNumberPlayers) {
+    if (trTechStatusActive(p, cTechEclipseActive)) continue;
+    trTechSetStatus(p, cTechEclipseActive, cTechStatusActive);
+  }
+}
+
+void initArenaSpeed() {
+  if (initArena()) {
+    string bid = unitDispatch("Jade Mine Tiny", arenaVec(gArena));
+    trSetSelectedScale(.5, 3, .5);
+    gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
+  }
+}
+
+void initArenaRelic() {
+  if (initArena()) {
+    arenaRelicCreate();
+    arenaRelicSet();
+  }
+}
+
+string unitConvertTeam() {
+  string bid = listGet(gActiveBIDs, gArena);
+  trUnitSelectClear();
+  trUnitSelect(bid);
+  string pcnts = cES;
+  int max = 0;
+  int twin = 0;
+  int owner = 0;
+  for (t=1;<=gNumberTeams) {
+    int tcnt = 0;
+    string players = teamGetPlayers(t);
+    int pcnt = intLen(players);
+    for (pos=1;<=pcnt) {
+      int p = intGet(players, pos);
+      if (trUnitIsOwnedBy(p)) owner = p;
+      int ucnt = trCountUnitsInArea(bid, p, "Unit", gArenaRadius * .5);
+      pcnts = intSet(pcnts, p, ucnt);
+      tcnt = tcnt + ucnt;
+    }
+    if (tcnt > max) {
+      twin = t;
+      max = tcnt;
+    }
+  }
+  players = teamGetPlayers(twin);
+  pcnt = intLen(players);
+  int pmax = 0;
+  int pwin = 0;
+  for (pos=1;<=pcnt) {
+    p = intGet(players, pos);
+    ucnt = intGet(pcnts, p);
+    if (ucnt > pmax) {
+      pwin = p;
+      pmax = ucnt;
+    }
+  }
+  if (kbGetPlayerTeam(owner)!=kbGetPlayerTeam(pwin)) {
+    trUnitConvert(pwin);
+    gameSound(gConvert);
+  } else if (pwin!=owner) {
+    trUnitConvert(pwin);
+    gameSound("repeaton.wav");
+  }
+
+  string rtn = intAdd(cES + twin, pwin);
+  rtn = intAdd(rtn, owner);
+  rtn = listAdd(rtn, pcnts);
+  return(rtn);
+}
+
+void arenaSpeedHB() {
+  string data = unitConvertTeam();
+  string wins = listGet(data, 1);
+  string pcnts = listGet(data, 2);
+  int pwin = intGet(wins, 2);
+  int cnt = intGet(pcnts, pwin);
+  for (p=1;<cNumberPlayers) {
+    bool hasTech = trTechStatusActive(p, cTechJourneyActive);
+    if (kbGetPlayerTeam(p)==kbGetPlayerTeam(pwin)) {
+      if (hasTech==false) trTechSetStatus(p, cTechJourneyActive, cTechStatusActive);
+    } else if (hasTech==true) {
+      trTechSetStatus(p, cTechJourneyActive, cTechStatusUnobtainable);
+    }
+  }
+}
+
+void arenaResourcesHB() {
+  string data = unitConvertTeam();
+  string wins = listGet(data, 1);
+  string pcnts = listGet(data, 2);
+  int twin = intGet(wins, 1);
+  int pwin = intGet(wins, 2);
+  int owner = intGet(wins, 3);
+  string players = teamGetPlayers(twin);
+  int pcnt = intLen(players);
+  for (pos=1;<=pcnt) {
+    int p = intGet(players, pos);
+    int cnt = intGet(pcnts, p);
+    trPlayerGrantResources(p, "food", cnt);
+  }
+}
+
+void arenaRelicHB() {
+  initArenaRelic();
+  string data = unitConvertTeam();
+  string wins = listGet(data, 1);
+  int twin = intGet(wins, 1);
+  int pwin = intGet(wins, 2);
+  int owner = intGet(wins, 3);
+  for (p=1;<cNumberPlayers) {
+    bool hasTech = trTechStatusActive(p, gRelicTech);
+    if (kbGetPlayerTeam(p)==kbGetPlayerTeam(pwin)) {
+      if (hasTech==false) trTechSetStatus(p, gRelicTech, cTechStatusActive);
+    } else if (hasTech==true) {
+      trTechSetStatus(p, gRelicTech, cTechStatusUnobtainable);
+    }
+  }
+}
+
 void battleBegin() {
-  trSetLighting(gBattleSky, 3.0);
+  trSetLighting(listGet(gBattleSky, gArena), 3.0);
   gameSound(gBattleCry);
   playerResPush();
   emptyBuildings();
-  int field = (gRound-1)%7;
-  gArena = field + 1;
+  gArena = (gRound-1)%7 + 1;
+ gArena = 6;
+  arenaBegin();
   vector v = arenaVec(gArena);
   float ptX = xsVectorGetX(v);
   float ptZ = xsVectorGetZ(v);
@@ -1126,7 +1369,7 @@ void setupOptions() {
   trRateResearch(speed);
   trRateTrain(speed);
   gGameWins = 7;
-  gBuildTime = 25;
+  gBuildTime = 15;
 }
 
 void setupVectors() {
@@ -1157,15 +1400,9 @@ void setupVectors() {
 }
 
 void setupLights() {
-  for (a=1;<=7) {
-    vector v = arenaVec(a);
-    trUnitCreate(gRevealer, gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, 0);
-  }
   for (i=1;<cNumberPlayers) {
-    v = playerVec(i);
-    for (p=1;<cNumberPlayers) {
-      trUnitCreate(gRevealer, gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
-    }
+    vector v = playerVec(i);
+    for (p=1;<cNumberPlayers) revealArea(v, p);
   }
 }
 
@@ -1183,10 +1420,9 @@ void setupTeams() {
 void setupTechTree() {
   for (p=1;<cNumberPlayers) {
     trPlayerTechTreeEnabledGodPowers(p, false);
-    trTechSetStatus(p, cTechRelicPeltofArgus, cTechStatusAvailable);
+    trTechSetStatus(p, cTechRelicPeltofArgus, cTechStatusActive);
     for (j = 0;<=41) trTechSetStatus(p, cTechRelicEyeofHorus, cTechStatusActive);
     for (j = 0;<=10) trTechSetStatus(p, cTechRelicNoseoftheSphinx, cTechStatusActive);
-    trTechSetStatus(p, cTechSecretsoftheTitans, cTechStatusAvailable);
     trTechSetStatus(p, cTechAge3Aphrodite, cTechStatusUnobtainable);
     trTechSetStatus(p, cTechAge4Artemis, cTechStatusUnobtainable);
     trTechSetStatus(p, cTechOdinsFirstRavens, cTechStatusUnobtainable);
@@ -1198,6 +1434,7 @@ void setupTechTree() {
     trTechSetStatus(p, cTechStartingUnitsThor, cTechStatusUnobtainable);
     trTechSetStatus(p, cTechStartingUnitsChinese, cTechStatusUnobtainable);
     trTechSetStatus(p, cTechPharaohRespawn, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechSetAge1Critter, cTechStatusUnobtainable);
   }
 }
 
@@ -1242,42 +1479,11 @@ void setupBuildings() {
   kbPlayerRestore();
 }
 
-void setupHealingSpring() {
-  trUnitSelectClear();
-  trUnitSelect(gDefault);
-  trTechInvokeGodPower(0, gHealString, arenaVec(2), vector(0, 0, 0));
-
-  vector v = arenaVec(4);
-  int sid = trGetNextUnitScenarioNameNumber();
-  trArmyDispatch("0,0", "Plenty Vault KOTH", 1, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, false);
-  int uid = kbGetBlockID(cES+sid);
-  trUnitSelectClear();
-  trUnitSelectByID(uid);
-  trSetSelectedScale(.25, .75, .25);
-  trUnitTeleport(xsVectorGetX(v), 0, xsVectorGetZ(v));
-
-  v = arenaVec(6);
-  trUnitCreate("Animal Attractor", gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, 0);
-
-  v = arenaVec(7);
-  string gate = listRandom("Tartarian Gate|Tartarian Gate birth|Tartarian Gate placement");
-  sid = trGetNextUnitScenarioNameNumber();
-  trArmyDispatch("0,0", gate, 1, xsVectorGetX(v), 0, xsVectorGetZ(v), 270, false);
-  //trUnitCreate(gate, gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, 0);
-  uid = kbGetBlockID(cES+sid);
-  trUnitSelectClear();
-  trUnitSelectByID(uid);
-  trSetSelectedScale(1, .5, 1);
-  trUnitTeleport(xsVectorGetX(v), 0, xsVectorGetZ(v));
-
-}
-
 void setupMap() {
   alert(csEgg);
   trEventSetHandler(420, gMusicEvent);
   gBattleSong = aiRandInt(17);
   setupBuildings();
-  setupHealingSpring();
 }
 
 bool notYet(int when=0, float start=0.0) {
@@ -1316,8 +1522,10 @@ rule _battling minInterval 2 inactive {
   kbLookAtAllUnitsOnMap();
   int winner = battleUpdate();
   if (winner==0) return;
-  battleFinish();
+  playerResPop();
+  armyRefund();
   if (checkVictory(winner)) return;
+  arenaEnd();
   buildBegin();
   xsDisableSelf();
   xsEnableRule(gBuilding);
@@ -1326,11 +1534,17 @@ rule _battling minInterval 2 inactive {
 rule _prevent_building minInterval 3 active {
   if (notYet(3, cActivationTime)) return;
   kbPlayerStore();
+  string bid = listGet(gActiveBIDs, gArena);
+  int exception = kbGetBlockID(cES+bid);
   for (p=1;<cNumberPlayers) {
     if (trPlayerActive(p)) {
       xsSetContextPlayer(p);
       int myCnt = unitQryRun(p, cUnitTypeBuilding, cUnitStateBuilding);
-      for (j=0;<myCnt) unitKill(unitQryRow(j));
+      for (j=0;<myCnt) {
+        int uid = unitQryRow(j);
+        if (uid==exception) continue;
+        unitKill(uid);
+      }
     }
   }
   kbPlayerRestore();
@@ -1366,34 +1580,41 @@ rule _ageup minInterval 1 active {
   }
 }
 
-rule _test minInterval 4 active {
- xsDisableSelf();
- trRevealEntireMap();
+rule _arenaHB1 minInterval 3 inactive {
+  initArenaRelic();
+  xsDisableSelf();
+}
 
-// kbPlayerStore();
-// kbLookAtAllUnitsOnMap();
-// xsSetContextPlayer(0);
-// int myCnt = unitQryRun(1, 575, cUnitStateAny);
-// for (j=0;<myCnt) {
-//   int uid = unitQryRow(j);
-//   chat("now = " + myCnt + " " + kbGetUnitTypeName(kbGetUnitBaseTypeID(uid)));
-// }
-// kbPlayerRestore();
+rule _arenaHB2 minInterval 3 inactive {
+  initArenaHealing();
+  xsDisableSelf();
+}
 
-// for(k=3000;>0){
-//   if (kbGetUnitTypeName(k)!="Invalid") {
-//     eff = kbGetUnitTypeName(k);
-//     int pos = xsFindString(eff, "lent", 0);
-//     if (pos > 0) chat("Type id: "+ k +" = "+ kbGetUnitTypeName(k));
-//   }
-// }
+rule _arenaHB3 minInterval 3 inactive {
+  arenaRelicHB();
+}
 
-//  int uid = trUnitCreate(eff, "Default", 0,0,0, 0, 1);
-// int uid = trUnitCreate(eff, "Default", pointX(pt), 8, pointZ(pt), 0, 1);
+rule _arenaHB4 minInterval 3 inactive {
+  initArenaSpeed();
+  arenaSpeedHB();
+}
 
-// trUnitSelectClear();
-//     trUnitSelectByID(uid);
-//       trUnitMoveToPoint(pointX(pt), 0, pointZ(pt));
+rule _arenaHB5 minInterval 3 inactive {
+  initArenaLava();
+  arenaRelicHB();
+}
 
+rule _arenaHB6 minInterval 3 inactive {
+  initArenaResources();
+  arenaResourcesHB();
+}
 
+rule _arenaHB7 minInterval 3 inactive {
+  initArenaMystic();
+  arenaRelicHB();
+}
+
+rule _test minInterval 1 active {
+   xsDisableSelf();
+  //trRevealEntireMap();
 }

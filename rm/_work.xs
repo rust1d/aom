@@ -120,101 +120,23 @@ float GetZPointOnCircle(float angle=0, float radius=0, float ptZ=.5) {
    return (atZ);
 }
 
-string GetSeaType(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   string list = "Norse River|savannah water hole|Norwegian Sea|Greek River|Styx River";
-   return(listGet(list, pick));
-}
-
-string GetLand(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return(listRandom("SnowA|SnowGrass50|SnowGrass25|CliffNorseB"));
-   if (pick==cSpring) return(listRandom("SavannahB|SavannahC|SavannahD|SavannahA"));
-   if (pick==cSummer) return(listRandom("GrassDirt25|CliffGreekB|GrassDirt50|GrassA"));
-   if (pick==cAutumn) return(listRandom("CliffNorseB|SnowGrass50|SnowGrass25"));
-   if (pick==cMordor) return(listRandom("UnderWaterRockA|HadesBuildable2|ForestFloorDeadPine"));
-}
-
-string GetCourt1Type(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return(listRandom("UnderWaterIceA|UnderWaterIceB"));
-   if (pick==cSpring) return(listRandom("MiningGround|CliffEgyptianB"));
-   if (pick==cSummer) return(listRandom("RiverGrassyC|CoralC"));
-   if (pick==cAutumn) return(listRandom("UnderWaterRockD|UnderWaterRockE|UnderWaterRockF"));
-   if (pick==cMordor) return(listRandom("Hades1|Hades8"));
-}
-
-string GetCourt2Type(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return(listRandom("ShoreLineAtlanticA|ShoreLineAtlanticB"));
-   if (pick==cSpring) return(listRandom("SandA|SandB|RiverSandyShallowA"));
-   if (pick==cSummer) return(listRandom("GrassA|GrassB"));
-   if (pick==cAutumn) return(listRandom("UnderWaterRockB|UnderWaterRockC"));
-   if (pick==cMordor) return(listRandom("HadesBuildable1|HadesBuildable2"));
+string GetEdge(int pick=0) {
+  if (pick==0) pick = rmRandInt(1,4);
+  if (pick%4==1) return(listRandom("ForestFloorPalm|DirtA|SandDirt50|SandDirt50b|SavannahC|SavannahD|UnderwaterRockF"));
+  if (pick%4==2) return(listRandom("GaiaCreepB|MarshA|MarshB|MarshE|RiverMarshA|RiverMarshB|RiverMarshC|JungleA|JungleB|PlainA|PlainB"));
+  if (pick%4==3) return(listRandom("TundraRockA|TundraRockB|DirtB|ForestFloorPine|GrassDirt75|JungleDirt75"));
+  return(listRandom("SnowA|SnowB|SnowGrass25|SnowSand25|ForestFloorPineSnow"));
 }
 
 string GetBlackType(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return("Hades6");
-   if (pick==cSpring) return("Dam");
-   if (pick==cSummer) return("CliffPlainA");
-   if (pick==cAutumn) return("HadesCliff");
-   if (pick==cMordor) return(listRandom("Hades3|Hades4|Hades5|Hades7"));
+   return(listRandom("Hades6|Dam|HadesCliff|Hades3"));
 }
 
-string GetCliffType(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return("Norse");
-   if (pick==cSpring) return("Egyptian");
-   if (pick==cSummer) return("Greek");
-   if (pick==cAutumn) return("Norse");
-   if (pick==cMordor) return("Hades");
-}
-
-string GetCliffType2(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return("CliffNorseA");
-   if (pick==cSpring) return("CliffEgyptianA");
-   if (pick==cSummer) return("CliffGreekA");
-   if (pick==cAutumn) return("CliffGreekB");
-   if (pick==cMordor) return("HadesCliff");
-}
-
-string GetRoadType(int pick=0) {
-   if (pick==0) pick = gSeason;
-   if (pick==0) pick = rmRandInt(1,5);
-   if (pick==cWinter) return(listRandom("NorseRoadA|UnderWaterRockC|ShorelineNorwegianC")); // WINTER
-   if (pick==cSpring) return(listRandom("EgyptianRoadA|CityTileA|UnderWaterRockD|UnderWaterRockE|CoralE")); // SPRING
-   if (pick==cSummer) return(listRandom("CityTileAtlantis|GreekRoadA|CityTileA|UnderWaterRockC"));
-   if (pick==cAutumn) return(listRandom("GreekRoadA|UnderWaterRockB|UnderWaterRockE")); // FALL
-   if (pick==cMordor) return(listRandom("UnderWaterRockD|CoralF|UnderWaterRockC")); // MORDOR
-}
-
-string randLava() {
-  return(listRandom("Lava Bubbling|Lava Bubbling|Smoke Giant|Stalagmite|Stalagmite|Stalagmite"));
-}
-
-string randWaterPlant() {
-  return(listRandom("Water Lilly|Seaweed|Papyrus"));
-}
-
-string randSnake() {
-  return(listRandom("Sea Snake|Sea Snake|Sea Snake|Jormund Elver"));
-}
-
-string randWaterItem() {
-  return(listRandom("Rotting Log|Grass|Bush|Crocodile|Water Reeds"));
-}
-
-string randGroundItem() {
-  return(listRandom("Skeleton Giant|Rotting Log|Rock Symbols|RuneStone|Stalagmite|Skeleton"));
+string GetCenter(int pick=0) {
+  if (pick==0) pick = rmRandInt(1,3);
+  if (pick%3==1) return(listRandom("CityTileA|NorseRoadA|CityTileAtlantis|EgyptianRoadA|GreekRoadA"));
+  if (pick%3==1) return(listRandom("CoralE|CoralF|UnderwaterRockB|UnderwaterRockC|UnderwaterRockD|UnderwaterRockE"));
+  return(listRandom("RiverIcyA|RiverIcyB|RiverGrassyA|RiverGrassyB"));
 }
 
 /* AREA FUNCTIONS  ************************************/
@@ -242,11 +164,6 @@ int areaCreateOnCircleInf(float ptX=0, float ptZ=0, float area=0, float angle=0,
   return(id);
 }
 
-void areaBlendCoherence(int id=0, int heightblend=2, float coherence=1) {
-  rmSetAreaHeightBlend(id, heightblend);
-  rmSetAreaCoherence(id, coherence);
-}
-
 void areaWaterBlendCoherence(int id=0, string type="", int heightblend=2, float coherence=1) {
   rmSetAreaWaterType(id, type);
   rmSetAreaHeightBlend(id, heightblend);
@@ -271,10 +188,6 @@ float mpct = 1.0;
 void statusText() {
   rmSetStatusText("", mpct);
   mpct = mpct - 0.1;
-}
-
-float wiggle(float in=0, float min=0, float max=1) {
-  return(in+rmRandFloat(min, max));
 }
 
 string ptAt(float ptX=0, float ptZ=0) {
@@ -333,68 +246,72 @@ void postAt(float ptX=0, float ptZ=0, int aid=0) {
   rmAddUnitsToArmy(0, aid, id);
 }
 
-void pitch_icypeaks(float ptX=0, float ptZ=0, float radius=0) {
-  hexCenter = "MiningGround";//GetLand(cWinter);
-  hexEdge = GetLand(cWinter);
-  string water = "Mediterranean Sea"; //GetSeaType(cSummer);
-  string cliff = GetCliffType(cWinter);
+void pitch_spires(float ptX=0, float ptZ=0, float radius=0) {
+  int pick = rmRandInt(1, 6);
+  hexCenter = listGet("TundraRoadA|PlainRoadA|GreekRoadA|EgyptianRoadA|NorseRoadA|JungleRoadA", pick);
+  hexEdge = listGet("ShorelineTundra|ShorelinePlain|ShorelineMediterranean|ShorelineRedSea|ShorelineNorwegian|ShorelineJungle", pick);
+  int edge = rmRandInt(1, iifF(pick<=3, 4, 3));
+  hexEdge = hexEdge + listGet("A|B|C|D", rmRandInt(1, iifF(pick<=3, 4, 3))); // FIRST 3 SHORELINES HAVE A "D" OPTION
+  string seas = "Norwegian Sea|Yellow Sea|Aegean Sea|Red Sea|North Atlantic Ocean|South Sea";
+  string oceans = "Tundra Pool|Yellow River|Greek River|Egyptian Nile|Norse River|Savannah Water Hole";
+  string water = listGet(iif(rmRandInt(1,2)==1, seas, oceans), pick);
+  string cliff = listGet("CliffGreekB|CliffPlainA|CliffGreekA|CliffEgyptianA|CliffNorseA|CliffJungleA", pick);
   int aid = pitchAt(ptX, ptZ, radius);
-  float cradius = radius * .5;
-  float area = rmXMetersToFraction(1);
-  for(i=1;<=12) {
-    float angle = 360/12 * i;
-    int id = areaCreateOnCircle(ptX, ptZ, area, angle, cradius);
-    areaWaterBlendCoherence(id, water, 1, .75);
-    rmBuildArea(id);
-  }
-  cradius = radius * .4;
-  area = cradius * cradius * PI;
-  int blend = 2; //rmRandInt(1,2);
+  float blob = radius * radius * PI * 0.066;
   float sides = rmRandInt(2,3) * 2;
+  float area = blob * 8 / sides;
   float steps = 360 / sides;
+  float cradius = radius * .5;
   for(i=1;<=sides) {
-    angle = i * steps;
-    float height = 6;
-    float fdist = cradius * rmRandFloat(1.1, 1.2);
-    float tdist = fdist * .2;
-    float size = area * rmRandFloat(0.15, 0.25);
-    id = areaCreateOnCircleInf(ptX, ptZ, size, angle, fdist, angle, tdist);
-    areaCliff(id, cliff, height, 2, 1);
-    rmSetAreaCliffEdge(id, 1, 1, 0, 0, 2);
-    rmBuildArea(id);
-    size = size / 2;
-    height = 3 + blend + rmRandInt(1, 2);
-    id = areaCreateOnCircle(ptX, ptZ, size, angle, fdist);
-    areaCliff(id, cliff, height, blend, 1);
-    rmSetAreaCliffEdge(id, 1, 1, 0, 0, 2);
+    float angle = i * steps + steps/2;
+    int id = areaCreateOnCircle(ptX, ptZ, area, angle, cradius);
+    areaWaterBlendCoherence(id, water, 0, .5);
     rmBuildArea(id);
   }
+  area = blob * 12 / sides;
   for(i=1;<=sides/2) {
     angle = i * steps;
     float tangle = angle + 180;
-    size = area * 0.23 * rmRandFloat(1.0, 1.2);
-    cradius = radius * .4 * rmRandFloat(1.0, 1.2);
-    id = areaCreateOnCircleInf(ptX, ptZ, size, angle, cradius, tangle, cradius);
+    id = areaCreateOnCircleInf(ptX, ptZ, area, angle, cradius, tangle, cradius);
+    areaLandBlendCoherence(id, cliff, 1, 1);
+    rmSetAreaBaseHeight(id, 2);
+    rmBuildArea(id);
+  }
+  area = blob * 2 / sides;
+  float height = 32 / sides;
+  for(i=1;<=sides) {
+    angle = i * steps;
+    id = areaCreateOnCircleInf(ptX, ptZ, area, angle, radius*.55, angle, radius*.48);
+    areaLandBlendCoherence(id, cliff, 1, 1);
+    rmSetAreaBaseHeight(id, height);
+    rmBuildArea(id);
+    id = areaCreateOnCircleInf(ptX, ptZ, area*.5, angle, radius*.28, angle, radius*.14);
+    areaLandBlendCoherence(id, cliff, 1, 1);
+    rmSetAreaBaseHeight(id, height-2);
+    rmBuildArea(id);
+  }
+  area = blob;
+  for(i=1;<=sides/2) {
+    angle = i * steps;
+    tangle = angle + 180;
+    cradius = radius * rmRandFloat(.5,.6);
+    id = areaCreateOnCircleInf(ptX, ptZ, area, angle, cradius, tangle, cradius);
     areaLandBlendCoherence(id, hexCenter, 0, 1);
     rmBuildArea(id);
     angle = i * steps + steps/2;
     tangle = angle + 180;
-    size = size * rmRandFloat(0.6, 1.1);
-    id = areaCreateOnCircleInf(ptX, ptZ, size, angle, cradius, tangle, cradius);
-    areaLandBlendCoherence(id, hexCenter, 0, 1);
+    area = area * .75;
+    cradius = cradius * .75;
+    id = areaCreateOnCircleInf(ptX, ptZ, area, angle, cradius, tangle, cradius);
+    areaLandBlendCoherence(id, hexCenter, 2, 1);
+    rmSetAreaBaseHeight(id, 1);
     rmBuildArea(id);
   }
-  size = area * rmRandFloat(.025, .035);
-  id = areaCreateAt(ptX, ptZ, size);
+  area = blob * .1;
+  id = areaCreateAt(ptX, ptZ, area);
   areaLandBlendCoherence(id, hexEdge, 1, .5);
   rmSetAreaBaseHeight(id, gSeaLevel);
   rmBuildArea(id);
-
-  int oid = rmCreateObjectDef(uuid());
-  rmAddObjectDefItem(oid, "rock river icy", 2, 2.0);
-  rmAddObjectDefItem(oid, "rock granite small", 1, 5.0);
-  rmAddObjectDefItem(oid, "rock limestone sprite", 3, 5.0);
-  rmPlaceObjectDefInArea(oid, 0, aid, 5);
 }
 
 void pitch_oasis(float ptX=0, float ptZ=0, float radius=0) {
@@ -458,7 +375,7 @@ void pitch_cliffs(float ptX=0, float ptZ=0, float radius=0) {
 void pitch_mystic(float ptX=0, float ptZ=0, float radius=0) {
   string options = "CoralA|CoralB|CoralC2|MarshC|UnderwaterIceB|UnderwaterIceC";
   hexEdge = listRandom(options);
-  hexCenter = listRandom("CoralC|CoralD|CoralE|CoralF|CityTileWaterPool");
+  hexCenter = listRandom("CoralC|CoralD|CoralE|CoralF");
   string pit = listRandom(options);
   string bridge = listRandom(options);
   if (hexEdge==pit) hexEdge = "OlympusC";
@@ -506,7 +423,7 @@ void pitch_forest(float ptX=0, float ptZ=0, float radius=0) {
   rmSetAreaMaxBlobDistance(id, rmXFractionToMeters(cradius));
   rmBuildArea(id);
   int tid = rmCreateObjectDef(uuid());
-  rmAddObjectDefItem(tid, tree, 1, 1);
+  rmAddObjectDefItem(tid, tree, 1, 0);
   float trees = cNumberPlayers * rmRandInt(10, 17);
   cradius = radius * .8;
   float steps = cradius / trees;
@@ -522,18 +439,11 @@ void pitch_forest(float ptX=0, float ptZ=0, float radius=0) {
     float frZ = GetZPointOnCircle(angle, dist, ptZ);
     rmPlaceObjectDefAtLoc(tid, 0, frX, frZ, 1);
   }
-  // int oid = rmCreateObjectDef(uuid());
-  // rmAddObjectDefItem(oid, "rock granite small", 3, 3.0);
-  // rmAddObjectDefItem(oid, "grass", 2, 3.0);
-  // rmPlaceObjectDefInArea(oid, 0, aid, 15);
-  // oid = rmCreateObjectDef(uuid());
-  // rmAddObjectDefItem(oid, "rotting log", 1, 0.0);
-  // rmPlaceObjectDefInArea(oid, 0, aid, 4);
 }
 
 void pitch_lava(float ptX=0, float ptZ=0, float radius=0) {
-  hexEdge = listRandom("Hades1|Hades2|Hades8|Hades9|UnderWaterRockA|UnderWaterRockD|ForestFloorDeadPine");
-  string land = listRandom("UnderWaterRockA|UnderWaterRockD|HadesBuildable1|HadesBuildable2");
+  hexEdge = listRandom("Hades1|Hades2|Hades8|Hades9|UnderwaterRockA|UnderwaterRockD|ForestFloorDeadPine");
+  string land = listRandom("UnderwaterRockA|UnderwaterRockD|HadesBuildable1|HadesBuildable2");
   string lava = listRandom("Hades3|Hades4|Hades5|Hades7");
   hexCenter = lava;
   int aid = pitchAt(ptX, ptZ, radius);
@@ -560,7 +470,7 @@ void pitch_lava(float ptX=0, float ptZ=0, float radius=0) {
   areaLandBlendCoherence(id, land, 0, 1);
   rmBuildArea(id);
   id = rmCreateObjectDef(uuid());
-  rmAddObjectDefItem(id, "Hades Fire", 1, 1);
+  rmAddObjectDefItem(id, "Hades Fire", 1, 0);
   step = 360/6;
   for(j=1;<=6) {
     angle = step * j;
@@ -578,7 +488,7 @@ void pitch_flats(float ptX=0, float ptZ=0, float radius=0) {
   rmAddObjectDefItem(oid, "Skeleton Giant", 1, 1);
   rmPlaceObjectDefInArea(oid, 0, aid, 50);
   oid = rmCreateObjectDef(uuid());
-  rmAddObjectDefItem(oid, "Stalagmite", 1, 1);
+  rmAddObjectDefItem(oid, "Stalagmite", 1, 0);
   float cradius = radius * .9;
   float step = 360/12;
   float area = rmXMetersToFraction(1) * .04; // X on some
@@ -594,80 +504,51 @@ void pitch_flats(float ptX=0, float ptZ=0, float radius=0) {
 }
 
 void main(void) {
-  int sizeX = 375 + (cNumberNonGaiaPlayers-2) * 10;
-  if (cNumberNonGaiaPlayers>3) sizeX = sizeX + 10;
-  if (cNumberNonGaiaPlayers>4) sizeX = sizeX + 55;
-  if (cNumberNonGaiaPlayers>6) sizeX = sizeX + 10;
-  if (cNumberNonGaiaPlayers>7) sizeX = sizeX + 5;
-  if (cNumberNonGaiaPlayers>10) sizeX = sizeX + 55;
+  int growth = cNumberNonGaiaPlayers - 2 + cNumberNonGaiaPlayers%2;
+  int sizeX = 383 + growth * 10;
+  if (cNumberNonGaiaPlayers>4) sizeX = sizeX + 60;
+  if (cNumberNonGaiaPlayers>6) sizeX = sizeX + 15;
+  if (cNumberNonGaiaPlayers>10) sizeX = sizeX + 60;
   sizeX = sizeX + sizeX%2;
-  debug = debug + " now = " + sizeX;
   rmSetMapSize(sizeX, sizeX);
   rmSetSeaLevel(0);
   rmTerrainInitialize(GetBlackType(), 0);
   statusText();
-  gSeason = 0; //rmRandInt(1, 5);
-  float ptX = 0;
-  float ptZ = 0;
-  float angle = 0;
-  int id = 0;
-  int aid = 0;
-  float radius = 0;
-  float offset = 0;
-
-  // COURT
-  string sea = GetSeaType();
-  string land = GetCourt1Type();
-  string road = GetRoadType();
-
-  float radiusPitch = rmXTilesToFraction(20 + cNumberNonGaiaPlayers - 2);
+  float radiusPitch = rmXTilesToFraction(20 + growth);
   float radiusHome = rmXTilesToFraction(16);
   float spacer = rmXTilesToFraction(5);
-
-  int rid = rmCreateObjectDef("Revealer");
-  rmAddObjectDefItem(rid, "Revealer", 1, 0.0);
-
-  // BATTLE PITCHES
   int paid = rmCreateArmy(0, "Centers");
-
-  hexEdge = GetLand();
-  hexCenter = GetRoadType();
-
+  float radius = (radiusPitch+spacer) * 2;
   pitch_flats(.5, .5, radiusPitch);
   postAt(.5, .5, paid);
-  radius = (radiusPitch+spacer) * 2;
   for(i=1;<=6) {
-    angle = (60 * i) + 60/2;
-    ptX = GetXPointOnCircle(angle, radius, .5);
-    ptZ = GetZPointOnCircle(angle, radius, .5);
-
-    if (i==1) pitch_icypeaks(ptX, ptZ, radiusPitch);
-    else if (i==2) pitch_oasis(ptX, ptZ, radiusPitch);
-    else if (i==3) pitch_cliffs(ptX, ptZ, radiusPitch);
-    else if (i==4) pitch_mystic(ptX, ptZ, radiusPitch);
-    else if (i==5) pitch_forest(ptX, ptZ, radiusPitch);
-    else if (i==6) pitch_lava(ptX, ptZ, radiusPitch);
-    else {
-      pitch_flats(ptX, ptZ, radiusPitch);
-    }
+    float angle = (60 * i) + 60/2;
+    float ptX = GetXPointOnCircle(angle, radius, .5);
+    float ptZ = GetZPointOnCircle(angle, radius, .5);
+    if (i==1) pitch_spires(ptX, ptZ, radiusPitch); // HS 2
+    else if (i==2) pitch_cliffs(ptX, ptZ, radiusPitch); // PV 4
+    else if (i==3) pitch_oasis(ptX, ptZ, radiusPitch);// 3
+    else if (i==4) pitch_lava(ptX, ptZ, radiusPitch); // TG 6
+    else if (i==5) pitch_forest(ptX, ptZ, radiusPitch);// 5
+    else if (i==6) pitch_mystic(ptX, ptZ, radiusPitch);// 7
     postAt(ptX, ptZ, paid);
   }
 
   // PLAYERS
-  radius = 82 + (cNumberNonGaiaPlayers - 2) * 2.5;
+  radius = 90 + growth * 2.5;
   radius = rmXTilesToFraction(radius);
   int tick = 1;
-  offset = 60;
+  float offset = 60;
   for(i=1;<=2) {
     for (j=1;<=3) {
       if (tick>cNumberNonGaiaPlayers) continue;
-      hexEdge = GetLand();
-      hexCenter = GetRoadType();
+      hexEdge = GetEdge(tick);
+      hexCenter = GetCenter(tick);
       angle = (60 * tick) + offset;
       for (k=1;<=2) {
         ptX = GetXPointOnCircle(angle, radius, .5);
         ptZ = GetZPointOnCircle(angle, radius, .5);
-        id = hexAt(ptX, ptZ, radiusHome, offset * 2);
+        int id = hexAt(ptX, ptZ, radiusHome, offset * 2);
         if (tick<=cNumberNonGaiaPlayers) {
           rmSetPlayerArea(tick, id);
           playerAt(tick, ptX, ptZ);
@@ -678,7 +559,7 @@ void main(void) {
       }
     }
     offset = 150;
-    radius = radiusPitch*3 + spacer*4 + radiusHome;
+    radius = radiusPitch*3 + spacer*6 + radiusHome;
   }
 
   statusText();
