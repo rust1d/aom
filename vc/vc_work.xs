@@ -1,43 +1,38 @@
-// GLOBALS PASSED FROM RM
 int cMapSize = 1;
-const float PI = 3.141592;
-string gPlayers = "TwentyOneScore|Kastor|three|four|five|six|seven|eight|nine|ten||leven|twelf";
+string gPlayers = "TwentyOneScore|Too|Free|Four|Jive|Six|Devon|Aight|Nein|Tent||Leven|Twelf";
 
-// GLOBALS
+float gArenaRadius = 0;
+float gMinTeamCnt = 1.0;
+int gArena = 0;
 int gBattleSong = 1;
 int gBuildEnds = 0;
 int gBuildSong = 1;
 int gBuildTime = 15;
 int gFavInc = 5;
 int gFavRound = 50;
+int gFavStart = 50;
 int gGameWins = 7;
 int gInstr = 1;
 int gNumberTeams = 2;
 int gQueryID = -1;
+int gRelicID = 0;
+int gRelicTech = 0;
 int gResInc = 50;
 int gResRound = 1200;
+int gResStart = 1200;
 int gRound = 0;
-int gArena = 0;
-int gRoundInit = 0;
-
-float gMinTeamCnt = 1.0;
-string gMsg = "";
-string gArenaXZ = "";
-string gPlayerXZ = "";
-string gArenaBIDs = "";
-string gPlayerBIDs = "";
-string gArenasInit = "";
 string gActiveBIDs = "";
-
-int gRelicTech = 0;
-int gRelicID = 0;
-
-float gArenaRadius = 0;
+string gArenaBIDs = "";
+string gArenaXZ = "";
+string gArenasInit = "";
+string gMsg = "";
+string gPlayerBIDs = "";
+string gPlayerXZ = "";
 
 const int cCivDataGodPowers = 0;
 const int cCivDataBuildings = 1;
+const float PI = 3.141592;
 
-// AOM XML CONSTANTS
 const int cCultureGreek = 0;
 const int cCultureEgyptian = 1;
 const int cCultureNorse = 2;
@@ -64,13 +59,11 @@ const int cTechStartingUnitsChinese = 510;
 const int cTechPharaohRespawn = 142;
 const int cTechSetAge1Critter = 380;
 
-const int cTechStatusObtainable = 1;
-const int cTechStatusActive = 4;
-const int cTechStatusAvailable = 2;
 const int cTechStatusUnobtainable = 0;
+const int cTechStatusObtainable = 1;
+const int cTechStatusAvailable = 2;
+const int cTechStatusActive = 4;
 
-const int cUnitHealingSpring = 576;
-const int cUnitPlentyVault = 586;
 const int cUnitTypeMilitary = 951;
 const int cUnitTypeUnit = 935;
 const int cUnitTypeBuilding = 937;
@@ -78,6 +71,14 @@ const int cUnitStatLOS = 2;
 const int cUnitStateAlive = 2;
 const int cUnitStateBuilding = 1;
 const int cUnitStateAny = 255;
+
+const int cUnitTypeRevealer = 14;
+const int cUnitTypeRelic = 559;
+const int cUnitTypeTartarianGate = 737;
+const int cUnitTypeBerryBush = 526;
+const int cUnitTypeJadeMineTiny = 871;
+const int cUnitTypeInfernoFlame = 99;
+const int cUnitTypeCinematicBlock = 52;
 
 const int cTechRelicEyeofHorus = 194;
 const int cTechRelicNoseoftheSphinx = 205;
@@ -106,9 +107,11 @@ const int cTechJourneyActive = 549;
 const int cTechEclipseActive = 377;
 
 // STRING CONSTANTS
-const string cES = "";
+const string c0 = "0";
 const string cAT = "@";
+const string cCL = ":";
 const string cCO = ",";
+const string cES = "";
 const string cEX = "!";
 const string cLB = "#";
 const string cN1 = "1";
@@ -116,36 +119,37 @@ const string cPI = "|";
 const string cPS = "%";
 const string cSL = "/";
 const string cSP = " ";
-const string cCL = ":";
 
 // STRINGS USED INTERNALLY
 const string gClr1 = "<color={playerColor(";
 const string gClr2 = ")}>";
 const string gClr3 = "</color>";
 
-const string gGameID = "bloodsport";
-const string gSlash = " / ";
+const string gArenaHB = "_arenaHB";
 const string gArmy = "Army";
-const string gBuilding = "_building";
-const string gBattling = "_battling";
-const string gResAll = "food|wood|gold|favor";
-const string gResFWG = "food|wood|gold";
-const string gFavor = "favor";
-const string gMP3 = ".mp3";
-const string gBattleSky = "Dawn|Dusk|Default|Dusk2|Hades2|fimbulwinter|Night2";
+const string gArmy0 = "0,0";
 const string gBattleCry = "battlecry4.wav";
+const string gBattleSky = "Dawn|Dusk|Default|Dusk2|Hades2|fimbulwinter|Night2";
+const string gBattling = "_battling";
 const string gBuildCry = "sentinelbirth.wav";
 const string gBuildSky = "Anatolia";
-const string gEnemy = "enemy";
-const string gConvert = "find.wav";
-const string gMusicEvent = "gameMusicBattle";
-const string gDefault = "default";
-const string gHealString = "Healing Spring";
-const string gPlenty = "Plenty";
+const string gBuilding = "_building";
 const string gCackle = "/dialog/en/skul062.mp3";
-const string gRevealer = "Revealer";
 const string gCenters = "Centers";
-const string gDamageEffect = "Inferno Unit Flame";
+const string gConvert = "find.wav";
+const string gDefault = "default";
+const string gEnemy = "enemy";
+const string gFavor = "favor";
+const string gFood = "food";
+const string gGameID = "bloodsport";
+const string gHealString = "Healing Spring";
+const string gMP3 = ".mp3";
+const string gMusicEvent = "gameMusicBattle";
+const string gResAll = "food|wood|gold|favor";
+const string gResFWG = "food|wood|gold";
+const string gSlash = " / ";
+const string gUnit = "Unit";
+const string gYoink = "repeaton.wav";
 
 const string gCivTemple = "Temple";
 const string gCivMarket = "Market";
@@ -154,38 +158,40 @@ const string gCivArmy2 = "Archery Range|Barracks|LongHouse|Barracks Atlantean|Ba
 const string gCivArmy3 = "Stable|Barracks|LongHouse|Counter Building|Stable Chinese";
 const string gCivArmory = "Armory|Dwarf Foundry";
 const string gCivKeep = "Fortress|Migdol Stronghold|Hill Fort|Palace|Castle";
-const string gAgeUpPowers = "Bolt|Restoration|Bolt|Lightning Storm|Curse";
+const string gAgeUpPowers = "Bolt|Restoration|Flaming Weapons|Lightning Storm|Lightning Storm";
 const string gAge3CivPowers = "Bronze|Skeleton Power|Flaming Weapons|Bronze|Geyser";
-
 const string gRelicsArena = "368#203#331#293#210#204|0|202#250#209#294|0|264#200#352#265#252|0|373#375#367";
-
 const string gBlockUnits = "Shade of Hades|Shade|Oracle Scout|Scout|Scout Chinese|Mercenary|Mercenary Cavalry";
 const string gBlockGarrison = "Helepolis|Siege Tower";
 const string gBlockFlying = "Pegasus|Roc|flying medic|Stymphalian Bird|Vermilion Bird";
 
 // LANGUAGE STRINGS
-const string csWins = "Wins";
-const string csGranted = "You have been granted";
 const string csAnd = " and ";
-const string csEgg = "**** Bloodsport Version 4.0 by TwentyOneScore ****";
-const string csThanks = "Thanks for playing Bloodsport!";
-const string csRemovedGame = "Removed Team @ from the game.";
-const string csRoundStarts = "Round #@ starts in";
-const string csTeamWonRounds = "Team @ won @ rounds.";
+const string csAvgHPs = "** Unit Average: @ HPs";
 const string csCongrats = "Congratulations @!";
-const string csForSurviving = "for @ units surviving.";
+const string csEgg = "**** Bloodsport Version 4.0 by TwentyOneScore ****";
 const string csForRound = "for Round #@.";
-const string csRemovedTeam = "Removed @ from Team @.";
+const string csForSurviving = "for @ units surviving.";
+const string csGranted = "You have been granted";
 const string csNowPlaying = "Now playing @";
+const string csRemovedGame = "Removed Team @ from the game.";
+const string csRemovedTeam = "Removed @ from Team @.";
+const string csRoundControlFood = "Control the Bush for food!";
+const string csRoundControlHeal = "Control the Spring for health!";
+const string csRoundControlRelic = "Control the Relic for power!";
+const string csRoundControlSpeed = "Control the Jade for speed!";
+const string csRoundStarts = "Round #@ starts in";
+const string csRoundWinRelic = "Win the Round to win the Relic!";
 const string csRules1 = "You have @ seconds to build an army of up to 30 units to do battle in the Arenas.";
 const string csRules2 = "Units are moved to an Arena at the start of each match. The last team standing wins the match.";
-const string csRules3 = "Each round you'll receive @ Food/Wood, @ Gold and @ Favor. This increases by @/@ each round.";
+const string csRules3 = "Each round you'll receive @ Food/Gold, @ Wood and @ Favor. This increases by @/@ each round.";
 const string csRules4 = "Players start with 1 Bolt and gets additional God Powers with each age.";
 const string csRules5 = "The game ends when a team wins @ rounds.";
-
-const string csSumPop = "** Units: Created: @ / Survived: @ (@) / Avg Per Round @";
 const string csSumHPs = "** HPs: Created: @ / Survived: @ (@) / Avg Per Round @";
-const string csAvgHPs = "** Unit Average: @ HPs";
+const string csSumPop = "** Units: Created: @ / Survived: @ (@) / Avg Per Round @";
+const string csTeamWonRounds = "Team @ won @ rounds.";
+const string csThanks = "Thanks for playing Bloodsport!";
+const string csWins = "Wins";
 
 string tracks(int mode=0, int track=0) {
   if (mode==1 && track==0)  return("music/fight/li'l drips");
@@ -205,7 +211,6 @@ string tracks(int mode=0, int track=0) {
   if (mode==1 && track==14) return("music/standard/never mind the slacks and bashers");
   if (mode==1 && track==15) return("music/standard/suture self");
   if (mode==1 && track==16) return("music/standard/behold the great science fi");
-
   if (mode==2 && track==0)  return("music/culture/greek to me");
   if (mode==2 && track==1)  return("music/culture/n. d. nile");
   if (mode==2 && track==2)  return("music/fight/i wish i could throw shapes");
@@ -222,6 +227,7 @@ string tracks(int mode=0, int track=0) {
 int gKbPlayer = 0;
 void kbPlayerStore() { gKbPlayer = xsGetContextPlayer(); }
 void kbPlayerRestore() { xsSetContextPlayer(gKbPlayer); }
+string kbPU(int id=0) { return(kbGetUnitTypeName(id)); }
 
 string iif(bool c=true, string t="", string f="") {
   if (c) return(t); return(f);
@@ -256,14 +262,14 @@ float radians(float angle=0) {
   return(rads);
 }
 
-float GetXPointOnCircle(float angle=0, float radius=0, float ptX=1) {
+float circleAtX(float angle=0, float radius=0, float ptX=1) {
   float atX = (radius * xsCos(radians(angle)) + ptX);
    atX = iifF(atX<0, 0, atX);
    atX = iifF(atX>kbGetMapXSize(), kbGetMapXSize(), atX);
    return(atX);
 }
 
-float GetZPointOnCircle(float angle=0, float radius=0, float ptZ=1) {
+float circleAtZ(float angle=0, float radius=0, float ptZ=1) {
    float atZ = (radius * xsSin(radians(angle)) + ptZ);
    atZ = iifF(atZ<0, 0, atZ);
    atZ = iifF(atZ>kbGetMapZSize(), kbGetMapZSize(), atZ);
@@ -374,7 +380,7 @@ string chatf(string data="", string list="") { chat(print(data, list)); }
 string chatColor(string msg="", int p=0) { chat(playerColor(p, msg)); }
 string chatColorf(string data="", string list="", int p=0) { chatColor(print(data, list), p); }
 
-// PUESDO DB - 3 TABLES WITH 12 ROWS OF 127 CHARS
+// PUESDO DB - 2 TABLES WITH 12 ROWS OF 127 CHARS
 const int dbTab1 = 1; const int dbTab2 = 2; const int dbTab3 = 3;
 string dbT11=""; string dbT12=""; string dbT13=""; string dbT14="";
 string dbT15=""; string dbT16=""; string dbT17=""; string dbT18="";
@@ -382,9 +388,6 @@ string dbT19=""; string dbT10=""; string dbT1A=""; string dbT1B="";
 string dbT21=""; string dbT22=""; string dbT23=""; string dbT24="";
 string dbT25=""; string dbT26=""; string dbT27=""; string dbT28="";
 string dbT29=""; string dbT20=""; string dbT2A=""; string dbT2B="";
-string dbT31=""; string dbT32=""; string dbT33=""; string dbT34="";
-string dbT35=""; string dbT36=""; string dbT37=""; string dbT38="";
-string dbT39=""; string dbT30=""; string dbT3A=""; string dbT3B="";
 
 string dbGetT1(int r=0) {
   if (r==1) return(dbT11); if (r==2) return(dbT12); if (r==3) return(dbT13);
@@ -414,26 +417,12 @@ void dbSetT2(int r=0, string v="") {
   else if (r==10) dbT20=v; else if (r==11) dbT2A=v; else dbT2B=v;
 }
 
-string dbGetT3(int r=0) {
-  if (r==1) return(dbT31); if (r==2) return(dbT32); if (r==3) return(dbT33);
-  if (r==4) return(dbT34); if (r==5) return(dbT35); if (r==6) return(dbT36);
-  if (r==7) return(dbT37); if (r==8) return(dbT38); if (r==9) return(dbT39);
-  if (r==10) return(dbT30); if (r==11) return(dbT3A); return(dbT3B);
-}
-
-void dbSetT3(int r=0, string v="") {
-  if      (r==1) dbT31=v; else if (r==2) dbT32=v; else if (r==3) dbT33=v;
-  else if (r==4) dbT34=v; else if (r==5) dbT35=v; else if (r==6) dbT36=v;
-  else if (r==7) dbT37=v; else if (r==8) dbT38=v; else if (r==9) dbT39=v;
-  else if (r==10) dbT30=v; else if (r==11) dbT3A=v; else dbT3B=v;
-}
-
 string dbGetRow(int t=0, int r=0) {
-  if (t==dbTab1) return(dbGetT1(r)); if (t==dbTab2) return(dbGetT2(r)); return(dbGetT3(r));
+  if (t==dbTab1) return(dbGetT1(r)); return(dbGetT2(r));
 }
 
 void dbSetRow(int t=0, int r=0, string v="") {
-  if (t==dbTab1) dbSetT1(r, v); else if (t==dbTab2) dbSetT2(r, v); else dbSetT3(r, v);
+  if (t==dbTab1) dbSetT1(r, v); else dbSetT2(r, v);
 }
 
 string dbGetStr(int t=0, int r=0, int c=0) {
@@ -459,17 +448,6 @@ int dbAccum(int t=0, int r=0, int c=0, int v=1) {
   v = v + dbGetInt(t, r, c);
   dbSetInt(t, r, c, v);
   return(v);
-}
-
-int dbGet2d(int t=0, int r=0, int c=0, int p=0) {
-  string ints = dbGetStr(t, r, c);
-  return(intGet(ints, p));
-}
-
-void dbSet2d(int t=0, int r=0, int c=0, int p=0, int v=0) {
-  string ints = dbGetStr(t, r, c);
-  ints = intSet(ints, p, v);
-  dbSetStr(t, r, c, ints);
 }
 
 string dbAdd2d(int t=0, int r=0, int c=0, int v=0) {
@@ -607,7 +585,7 @@ string playerGetBank(int r=1) { return(dbGetStr(dbPlayer, r, dbpBank)); }
 void   playerSetBank(int r=1, string v="") { dbSetStr(dbPlayer, r, dbpBank, v); }
 
 string playerAgePower(int p=0, int age=0) {
-  return(listGet(cultureData(p, cCivDataGodPowers), age+1));
+  return(listGet(gAgeUpPowers, age+1));
 }
 
 bool playerJustQuit(int p=0) {
@@ -732,7 +710,6 @@ void gameOver(int winner=0) {
     }
   }
   xsDisableRule(gBattling);
-  //trEndGame();
 }
 
 int armyCnt(int p=0) {
@@ -788,9 +765,9 @@ void gameStatsShow(bool health = false) {
     string name = cES;
     string stats = gameStatLine(teamGetHPs(t), curHPs, teamGetPop(t));
     stats = stats + cPI + teamGetWins(t) + cSP + csWins;
-    if (alive!=0) { // 1 player team
+    if (alive!=0) {
       name = playerName(alive);
-    } else { // 2 or more
+    } else {
       for (pos=1;<=pCnt) {
         p = intGet(players, pos);
         int pop = playerGetPop(p);
@@ -813,8 +790,8 @@ void gameStatsShow(bool health = false) {
   }
 }
 
-void protoUnitLOS(int p=0, string type="", int los=0) {
-  trModifyProtounit(type, p, cUnitStatLOS, los);
+void protoUnitLOS(int p=0, int tid=0, int los=0) {
+  trModifyProtounit(kbPU(tid), p, cUnitStatLOS, los);
 }
 
 bool unitBlocked(int uid=0) {
@@ -824,13 +801,13 @@ bool unitBlocked(int uid=0) {
   return(false);
 }
 
-float unitDistance(int uid=0, int a=0) {
-  vector v = arenaVec(a);
-  trUnitSelectClear();
-  trUnitSelectByID(uid);
-  float dist = trUnitDistanceToPoint(xsVectorGetX(v), 0, xsVectorGetZ(v));
-  return(dist);
-}
+// float unitDistance(int uid=0, int a=0) {
+//   vector v = arenaVec(a);
+//   trUnitSelectClear();
+//   trUnitSelectByID(uid);
+//   float dist = trUnitDistanceToPoint(xsVectorGetX(v), 0, xsVectorGetZ(v));
+//   return(dist);
+// }
 
 void unitKill(int uid=0, int p=0) {
   if (p>0) resInc(p, gResFWG, kbUnitGetCurrentAICost(uid)/3);
@@ -899,9 +876,9 @@ void armyRefund() {
   kbPlayerRestore();
 }
 
-string unitDispatch(string unit="", vector v=vector(0,0,0)) {
+string unitDispatch(int tid=0, vector v=vector(0,0,0)) {
   string bid = cES+trGetNextUnitScenarioNameNumber();
-  trArmyDispatch("0,0", unit, 1, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, false);
+  trArmyDispatch(gArmy0, kbPU(tid), 1, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, false);
   trUnitSelectClear();
   trUnitSelect(bid);
   trUnitTeleport(xsVectorGetX(v), 0, xsVectorGetZ(v));
@@ -910,7 +887,7 @@ string unitDispatch(string unit="", vector v=vector(0,0,0)) {
 
 void arenaRelicSet() {
   string techs = listGet(gRelicsArena, gArena);
-  if (techs=="0") return;
+  if (techs==c0) return;
   gRelicTech = intRandom(techs);
   string bid = listGet(gActiveBIDs, gArena);
   vector v = arenaVec(gArena);
@@ -922,7 +899,7 @@ void arenaRelicSet() {
 }
 
 void arenaRelicCreate() {
-  string bid = unitDispatch("Relic", arenaVec(gArena));
+  string bid = unitDispatch(cUnitTypeRelic, arenaVec(gArena));
   if (gArena!=1) trSetSelectedScale(2,4,2);
   gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
 }
@@ -931,24 +908,24 @@ void arenaRelicAward(int team=0) {
   if (gArena!=1) return;
   for (p=1;<cNumberPlayers) {
     if (kbGetPlayerTeam(p)==team) {
-      string bid = unitDispatch("Relic", playerVec(p));
+      string bid = unitDispatch(cUnitTypeRelic, playerVec(p));
       trSetRelicType(gRelicTech);
     }
   }
 }
 
 void arenaEnd() {
-  xsDisableRule("_arenaHB"+gArena);
+  xsDisableRule(gArenaHB+gArena);
   for (p=1;<cNumberPlayers) {
     if (trTechStatusActive(p, gRelicTech)) trTechSetStatus(p, gRelicTech, cTechStatusUnobtainable);
     if (trTechStatusActive(p, cTechEclipseActive)) trTechSetStatus(p, cTechEclipseActive, cTechStatusUnobtainable);
+    if (trTechStatusActive(p, cTechJourneyActive)) trTechSetStatus(p, cTechJourneyActive, cTechStatusUnobtainable);
   }
   arenaRelicSet();
 }
 
 void arenaBegin() {
-  gRoundInit = 0;
-  xsEnableRule("_arenaHB"+gArena);
+  xsEnableRule(gArenaHB+gArena);
 }
 
 void battleWon(int team=0) {
@@ -985,7 +962,7 @@ void battleCowards(int aid=0) {
       vector up = kbUnitGetPosition(uid);
       trDamageUnit(amt);
       trUnitHighlight(2);
-      trUnitCreate(gDamageEffect, gDefault, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, 1);
+      trUnitCreate(kbPU(cUnitTypeInfernoFlame), gDefault, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, 1);
     }
   }
 }
@@ -1035,21 +1012,30 @@ void emptyBuildings(int p=0) {
   }
 }
 
-void revealArea(vector v=vector(0,0,0), int p=0) {
-  trUnitCreate(gRevealer, gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
+void revealArea(vector v=vector(0,0,0)) {
+  for (p=0;<cNumberPlayers) trUnitCreate(kbPU(cUnitTypeRevealer), gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
 }
 
 bool initArena() {
   if (intGet(gArenasInit, gArena)==1) return(false);
-  revealArea(arenaVec(gArena), 0);
+  revealArea(arenaVec(gArena));
   gArenasInit = intSet(gArenasInit, gArena, 1);
   return(true);
 }
 
+void initArenaWinRelic() {
+  if (initArena()) {
+    alert(csRoundWinRelic);
+    arenaRelicCreate();
+    arenaRelicSet();
+  }
+}
+
 void initArenaLava() {
   if (initArena()) {
-    unitDispatch("Tartarian Gate", arenaVec(gArena));
-    trSetSelectedScale(1,.5,1);
+    alert(csRoundControlRelic);
+    unitDispatch(cUnitTypeTartarianGate, arenaVec(gArena));
+    trSetSelectedScale(1, .5, 1);
     arenaRelicCreate();
     arenaRelicSet();
   }
@@ -1057,16 +1043,18 @@ void initArenaLava() {
 
 void initArenaHealing() {
   if (initArena()) {
+    alert(csRoundControlHeal);
     trUnitSelectClear();
     trUnitSelect(gDefault);
-    trTechInvokeGodPower(0, gHealString, arenaVec(2), vector(0, 0, 0));
+    trTechInvokeGodPower(0, gHealString, arenaVec(gArena), vector(0, 0, 0));
   }
 }
 
 void initArenaResources() {
   if (initArena()) {
-    string bid = unitDispatch("Berry Bush", arenaVec(gArena));
-    trSetSelectedScale(1,2,1);
+    alert(csRoundControlFood);
+    string bid = unitDispatch(cUnitTypeBerryBush, arenaVec(gArena));
+    trSetSelectedScale(1.5, 2.5, 1.5);
     gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
   }
 }
@@ -1080,7 +1068,8 @@ void initArenaMystic() {
 
 void initArenaSpeed() {
   if (initArena()) {
-    string bid = unitDispatch("Jade Mine Tiny", arenaVec(gArena));
+    alert(csRoundControlSpeed);
+    string bid = unitDispatch(cUnitTypeJadeMineTiny, arenaVec(gArena));
     trSetSelectedScale(.5, 3, .5);
     gActiveBIDs = listSet(gActiveBIDs, gArena, bid);
   }
@@ -1088,6 +1077,7 @@ void initArenaSpeed() {
 
 void initArenaRelic() {
   if (initArena()) {
+    alert(csRoundControlRelic);
     arenaRelicCreate();
     arenaRelicSet();
   }
@@ -1108,7 +1098,7 @@ string unitConvertTeam() {
     for (pos=1;<=pcnt) {
       int p = intGet(players, pos);
       if (trUnitIsOwnedBy(p)) owner = p;
-      int ucnt = trCountUnitsInArea(bid, p, "Unit", gArenaRadius * .5);
+      int ucnt = trCountUnitsInArea(bid, p, gUnit, gArenaRadius * .5);
       pcnts = intSet(pcnts, p, ucnt);
       tcnt = tcnt + ucnt;
     }
@@ -1134,7 +1124,7 @@ string unitConvertTeam() {
     gameSound(gConvert);
   } else if (pwin!=owner) {
     trUnitConvert(pwin);
-    gameSound("repeaton.wav");
+    gameSound(gYoink);
   }
 
   string rtn = intAdd(cES + twin, pwin);
@@ -1165,13 +1155,12 @@ void arenaResourcesHB() {
   string pcnts = listGet(data, 2);
   int twin = intGet(wins, 1);
   int pwin = intGet(wins, 2);
-  int owner = intGet(wins, 3);
   string players = teamGetPlayers(twin);
   int pcnt = intLen(players);
   for (pos=1;<=pcnt) {
     int p = intGet(players, pos);
     int cnt = intGet(pcnts, p);
-    trPlayerGrantResources(p, "food", cnt);
+    trPlayerGrantResources(p, gFood, cnt);
   }
 }
 
@@ -1181,7 +1170,6 @@ void arenaRelicHB() {
   string wins = listGet(data, 1);
   int twin = intGet(wins, 1);
   int pwin = intGet(wins, 2);
-  int owner = intGet(wins, 3);
   for (p=1;<cNumberPlayers) {
     bool hasTech = trTechStatusActive(p, gRelicTech);
     if (kbGetPlayerTeam(p)==kbGetPlayerTeam(pwin)) {
@@ -1198,7 +1186,7 @@ void battleBegin() {
   playerResPush();
   emptyBuildings();
   gArena = (gRound-1)%7 + 1;
- gArena = 6;
+ //gArena = 6;
   arenaBegin();
   vector v = arenaVec(gArena);
   float ptX = xsVectorGetX(v);
@@ -1229,12 +1217,12 @@ void battleBegin() {
         for (j=(aCnt-1);>=0) {
           float cell = (j%6) * 3.0;
           if (cell==0) row = row + 3.0;
-          int atX = GetXPointOnCircle(angle+cell, gArenaRadius-row, ptX);
-          int atZ = GetZPointOnCircle(angle+cell, gArenaRadius-row, ptZ);
+          int atX = circleAtX(angle+cell, gArenaRadius-row, ptX);
+          int atZ = circleAtZ(angle+cell, gArenaRadius-row, ptZ);
           unitMove(p, aid, j, atX, atZ);
         }
-        atX = GetXPointOnCircle(angle + 25, 10, ptX);
-        atZ = GetZPointOnCircle(angle + 25, 10, ptZ);
+        atX = circleAtX(angle + 25, 10, ptX);
+        atZ = circleAtZ(angle + 25, 10, ptZ);
         trUnitSelectClear();
         trArmySelect(p + cCO + aid);
         trUnitMoveToPoint(atX, 0, atZ);
@@ -1327,7 +1315,7 @@ void buildResources() {
     for (pos=1;<=pCnt) {
       int p = intGet(players, pos);
       gMsg = print(csForRound, str(gRound));
-      resAward(p, gMsg, gResRound, gResRound * 1.5, gResRound, gFavRound, ratio);
+      resAward(p, gMsg, gResRound, gResRound * 1.25, gResRound, gFavRound, ratio);
     }
   }
   gResRound = gResRound + gResInc;
@@ -1357,8 +1345,7 @@ void buildBegin() {
 }
 
 void setupOptions() {
-  gGameWins = 7;
-  if (cMapSize==1) gGameWins = 11;
+  gGameWins = 7 + cMapSize * 4;
   int speed = 7;
   gBuildTime = 55;
   if (vcGetGameplayMode()==cGameModeLightning) {
@@ -1366,10 +1353,9 @@ void setupOptions() {
     gBuildTime = 45;
   }
   if (vcGetGameplayMode()==cGameModeDeathmatch) gResRound = 1000;
+  gResStart = gResRound;
   trRateResearch(speed);
   trRateTrain(speed);
-  gGameWins = 7;
-  gBuildTime = 15;
 }
 
 void setupVectors() {
@@ -1395,15 +1381,12 @@ void setupVectors() {
     }
     trUnitSelectByID(uid);
   }
-  trUnitChangeProtoUnit("Cinematic Block");
+  trUnitChangeProtoUnit(kbPU(cUnitTypeCinematicBlock));
   kbPlayerRestore();
 }
 
 void setupLights() {
-  for (i=1;<cNumberPlayers) {
-    vector v = playerVec(i);
-    for (p=1;<cNumberPlayers) revealArea(v, p);
-  }
+  for (p=0;<cNumberPlayers) revealArea(playerVec(p));
 }
 
 void setupTeams() {
@@ -1442,10 +1425,8 @@ void setupProtoUnits() {
   gameBlockUnits(gBlockUnits);
   gameBlockUnits(gBlockGarrison);
   gameBlockUnits(gBlockFlying);
-  trModifyProtounit("Animal Attractor", 0, 0, 15000);
-  protoUnitLOS(0, "Animal Attractor", gArenaRadius/2);
-  protoUnitLOS(0, gRevealer, gArenaRadius + 10);
-  for (p=1;<cNumberPlayers) protoUnitLOS(p, gRevealer, 20);
+  //protoUnitLOS(0, cUnitTypeRevealer, gArenaRadius + 5);
+  for (p=0;<cNumberPlayers) protoUnitLOS(p, cUnitTypeRevealer, gArenaRadius);
 }
 
 void setupGodPowers() {
@@ -1557,8 +1538,8 @@ rule _instructions minInterval 6 active {
   } else if (gInstr==2) {
     alert(csRules2);
   } else if (gInstr==3) {
-    gMsg = listAdd(str(gResRound), str(gResRound*1.5));
-    gMsg = listAdd(gMsg, str(gFavRound));
+    gMsg = listAdd(str(gResStart), str(gResStart*1.25));
+    gMsg = listAdd(gMsg, str(gFavStart));
     gMsg = listAdd(gMsg, str(gResInc));
     gMsg = listAdd(gMsg, str(gFavInc));
     alertf(csRules3, gMsg);
@@ -1581,7 +1562,7 @@ rule _ageup minInterval 1 active {
 }
 
 rule _arenaHB1 minInterval 3 inactive {
-  initArenaRelic();
+  initArenaWinRelic();
   xsDisableSelf();
 }
 
