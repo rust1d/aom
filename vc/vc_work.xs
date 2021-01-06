@@ -2,6 +2,7 @@ int cMapSize = 1;
 string gPlayers = "TwentyOneScore|Too|Free|Four|Jive|Six|Devon|Aight|Nein|Tent||Leven|Twelf";
 
 float gArenaRadius = 0;
+float gPlayerRadius = 30;
 float gMinTeamCnt = 1.0;
 int gArena = 0;
 int gBattleSong = 1;
@@ -14,7 +15,6 @@ int gFavStart = 50;
 int gGameWins = 7;
 int gInstr = 1;
 int gNumberTeams = 2;
-int gQueryID = -1;
 int gRelicID = 0;
 int gRelicTech = 0;
 int gResInc = 50;
@@ -64,15 +64,19 @@ const int cTechStatusObtainable = 1;
 const int cTechStatusAvailable = 2;
 const int cTechStatusActive = 4;
 
+const int cUnitStatHP = 0;
+const int cUnitStatLOS = 2;
+
 const int cUnitTypeMilitary = 951;
 const int cUnitTypeUnit = 935;
 const int cUnitTypeBuilding = 937;
-const int cUnitStatLOS = 2;
+
 const int cUnitStateAlive = 2;
 const int cUnitStateBuilding = 1;
 const int cUnitStateAny = 255;
 
 const int cUnitTypeRevealer = 14;
+const int cUnitTypeRevealerPlayer = 100;
 const int cUnitTypeRelic = 559;
 const int cUnitTypeTartarianGate = 737;
 const int cUnitTypeBerryBush = 526;
@@ -790,8 +794,11 @@ void gameStatsShow(bool health = false) {
   }
 }
 
-void protoUnitLOS(int p=0, int tid=0, int los=0) {
-  trModifyProtounit(kbPU(tid), p, cUnitStatLOS, los);
+void setupRevealer(int t=0, int p=0, int los=0) {
+  trModifyProtounit(kbPU(t), p, cUnitStatLOS, 9999999999999999999.0);
+  trModifyProtounit(kbPU(t), p, cUnitStatLOS, -9999999999999999999.0);
+  trModifyProtounit(kbPU(t), p, cUnitStatHP, 999999999999.0);
+  trModifyProtounit(kbPU(t), p, cUnitStatLOS, los);
 }
 
 bool unitBlocked(int uid=0) {
@@ -800,14 +807,6 @@ bool unitBlocked(int uid=0) {
   if (kbUnitGetMovementType(ubt)==cMovementTypeAir) return(true);
   return(false);
 }
-
-// float unitDistance(int uid=0, int a=0) {
-//   vector v = arenaVec(a);
-//   trUnitSelectClear();
-//   trUnitSelectByID(uid);
-//   float dist = trUnitDistanceToPoint(xsVectorGetX(v), 0, xsVectorGetZ(v));
-//   return(dist);
-// }
 
 void unitKill(int uid=0, int p=0) {
   if (p>0) resInc(p, gResFWG, kbUnitGetCurrentAICost(uid)/3);
@@ -824,18 +823,17 @@ void unitMove(int p=1, int aid=1, int pos=1, int x=0, int z=0) {
   trArmyDispatch(p + cCO + aid, PUN, 1, x, 0, z, 1, false);
 }
 
-int unitQryRow(int r=0) {
-  return(kbUnitQueryGetResult(gQueryID, r));
+int unitQryRow(int qid=0, int r=0) {
+  return(kbUnitQueryGetResult(qid, r));
 }
 
-int unitQryRun(int p=0, int uid=0, int us=2) {
-  if (gQueryID==-1) gQueryID = kbUnitQueryCreate(gGameID);
-  if (gQueryID==-1) return(-1);
-  kbUnitQueryResetData(gQueryID);
-  kbUnitQuerySetPlayerID(gQueryID, p);
-  kbUnitQuerySetUnitType(gQueryID, uid);
-  kbUnitQuerySetState(gQueryID, us);
-  return(kbUnitQueryExecute(gQueryID));
+int unitQryRun(int qid=0, int p=0, int uid=0, int us=2) {
+  kbUnitQueryResetData(qid);
+  kbUnitQuerySetPlayerID(qid, p);
+  kbUnitQuerySetUnitType(qid, uid);
+  kbUnitQuerySetState(qid, us);
+  kbUnitQueryResetResults(qid);
+  return(kbUnitQueryExecute(qid));
 }
 
 int armyClearDead(int aid = 0) {
@@ -916,6 +914,7 @@ void arenaRelicAward(int team=0) {
 
 void arenaEnd() {
   xsDisableRule(gArenaHB+gArena);
+  for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gPlayerRadius);
   for (p=1;<cNumberPlayers) {
     if (trTechStatusActive(p, gRelicTech)) trTechSetStatus(p, gRelicTech, cTechStatusUnobtainable);
     if (trTechStatusActive(p, cTechEclipseActive)) trTechSetStatus(p, cTechEclipseActive, cTechStatusUnobtainable);
@@ -925,6 +924,7 @@ void arenaEnd() {
 }
 
 void arenaBegin() {
+  for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gArenaRadius);
   xsEnableRule(gArenaHB+gArena);
 }
 
@@ -1012,13 +1012,19 @@ void emptyBuildings(int p=0) {
   }
 }
 
-void revealArea(vector v=vector(0,0,0)) {
-  for (p=0;<cNumberPlayers) trUnitCreate(kbPU(cUnitTypeRevealer), gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
+void revealArea(int tid=0, int p=0, vector v=vector(0,0,0)) {
+  trUnitCreate(kbPU(tid), gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
+}
+
+void castHealingSpring() {
+  trUnitSelectClear();
+  trUnitSelect(gDefault);
+  trTechInvokeGodPower(0, gHealString, arenaVec(gArena), vector(0, 0, 0));
 }
 
 bool initArena() {
   if (intGet(gArenasInit, gArena)==1) return(false);
-  revealArea(arenaVec(gArena));
+  for (p=1;<cNumberPlayers) revealArea(cUnitTypeRevealerPlayer, p, arenaVec(gArena));
   gArenasInit = intSet(gArenasInit, gArena, 1);
   return(true);
 }
@@ -1044,9 +1050,7 @@ void initArenaLava() {
 void initArenaHealing() {
   if (initArena()) {
     alert(csRoundControlHeal);
-    trUnitSelectClear();
-    trUnitSelect(gDefault);
-    trTechInvokeGodPower(0, gHealString, arenaVec(gArena), vector(0, 0, 0));
+    castHealingSpring();
   }
 }
 
@@ -1239,6 +1243,8 @@ void buildArmy() {
     teamSetHPs(t);
   }
   kbPlayerStore();
+  static int qid = -1;
+  if (qid==-1) qid = kbUnitQueryCreate("build");
   for (p=1;<cNumberPlayers) {
     if (trPlayerActive(p)) {
       xsSetContextPlayer(p);
@@ -1250,9 +1256,9 @@ void buildArmy() {
       int aHPs = armyClearDead(aid);
       int aCnt = kbArmyGetNumberUnits(aid);
       if (aCnt<MaxUnits) {
-        int myCnt = unitQryRun(p, cUnitTypeUnit, cUnitStateAlive);
+        int myCnt = unitQryRun(qid, p, cUnitTypeUnit, cUnitStateAlive);
         for (j=0;<myCnt) {
-          int uid = unitQryRow(j);
+          int uid = unitQryRow(qid, j);
           if (unitBlocked(uid)) {
             unitKill(uid, p);
           } else if (aCnt<MaxUnits) {
@@ -1266,8 +1272,8 @@ void buildArmy() {
       playerSetHPs(p, aHPs);
       teamIncPop(team, aCnt);
       teamIncHPs(team, aHPs);
-      aCnt = gameTimerLeft();
-      if (aCnt%5==3) {
+      int secs = gameTimerLeft();
+      if (secs%15==5) {
         vector v = playerVec(p);
         trUnitSelectClear();
         trArmySelect(p + cCO + aid);
@@ -1352,6 +1358,7 @@ void setupOptions() {
     speed = 10;
     gBuildTime = 45;
   }
+  // gBuildTime= 15;
   if (vcGetGameplayMode()==cGameModeDeathmatch) gResRound = 1000;
   gResStart = gResRound;
   trRateResearch(speed);
@@ -1370,7 +1377,7 @@ void setupVectors() {
   trUnitSelectByID(uid);
   uid = kbArmyGetUnitID(aid, 1);
   float dist = trUnitDistanceToUnitID(uid);
-  gArenaRadius = dist / 2 - 10;
+  gArenaRadius = dist / 2;
   for(j=0;<aCnt) {
     uid = kbArmyGetUnitID(aid, j);
     int bid = trGetUnitScenarioNameNumber(uid);
@@ -1383,10 +1390,6 @@ void setupVectors() {
   }
   trUnitChangeProtoUnit(kbPU(cUnitTypeCinematicBlock));
   kbPlayerRestore();
-}
-
-void setupLights() {
-  for (p=0;<cNumberPlayers) revealArea(playerVec(p));
 }
 
 void setupTeams() {
@@ -1425,11 +1428,12 @@ void setupProtoUnits() {
   gameBlockUnits(gBlockUnits);
   gameBlockUnits(gBlockGarrison);
   gameBlockUnits(gBlockFlying);
-  //protoUnitLOS(0, cUnitTypeRevealer, gArenaRadius + 5);
-  for (p=0;<cNumberPlayers) protoUnitLOS(p, cUnitTypeRevealer, gArenaRadius);
+  setupRevealer(cUnitTypeRevealerPlayer, 0, 999);
+  for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gPlayerRadius);
 }
 
 void setupGodPowers() {
+  trSetDisableGPBlocking(true);
   for (p=1;<cNumberPlayers) {
     trPlayerSetDiplomacy(p, 0, gEnemy);
     trPlayerSetDiplomacy(0, p, gEnemy);
@@ -1474,7 +1478,6 @@ bool notYet(int when=0, float start=0.0) {
 rule _setup highFrequency active {
   setupOptions();
   setupVectors();
-  setupLights();
   setupTeams();
   setupTechTree();
   setupProtoUnits();
@@ -1515,14 +1518,16 @@ rule _battling minInterval 2 inactive {
 rule _prevent_building minInterval 3 active {
   if (notYet(3, cActivationTime)) return;
   kbPlayerStore();
+  static int qid = -1;
+  if (qid==-1) qid = kbUnitQueryCreate("prevent");
   string bid = listGet(gActiveBIDs, gArena);
   int exception = kbGetBlockID(cES+bid);
   for (p=1;<cNumberPlayers) {
     if (trPlayerActive(p)) {
       xsSetContextPlayer(p);
-      int myCnt = unitQryRun(p, cUnitTypeBuilding, cUnitStateBuilding);
+      int myCnt = unitQryRun(qid, p, cUnitTypeBuilding, cUnitStateBuilding);
       for (j=0;<myCnt) {
-        int uid = unitQryRow(j);
+        int uid = unitQryRow(qid, j);
         if (uid==exception) continue;
         unitKill(uid);
       }

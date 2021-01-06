@@ -13,18 +13,8 @@ void xs(string code="") {
 }
 
 void InjectXS() {
-  int id = rmCreateTrigger("tosInject");
-  rmSwitchToTrigger(id);
-  rmSetTriggerActive(false);
-  rmAddTriggerEffect("SetIdleProcessing");
-  rmSetTriggerEffectParam("IdleProc",");}}/*");
-  xs("string gPlayers = \"" + names() + "\";");
-  xs("int cMapSize = "+cMapSize+";");
-
-  rmAddTriggerEffect("SetIdleProcessing");
-  rmSetTriggerEffectParam("IdleProc",");*/rule _tosInjectEnd inactive { if (true) { //");
+  rmSetVCFile("vc_work");
 }
-
 
 const float PI = 3.141592;
 const string cES = "";
@@ -247,7 +237,7 @@ int hexAt(float ptX=0, float ptZ=0, float radius=0, float rotate=0) {
   return(id);
 }
 
-void postAt(float ptX=0, float ptZ=0, int aid=0) {
+void postAt(float ptX=0, float ptZ=0, int aid=0, int p=0) {
   int id = rmCreateObjectDef(uuid());
   rmAddObjectDefItem(id, "Outpost", 1, 0.0);
   rmPlaceObjectDefAtLoc(id, 0, ptX, ptZ, 1);
@@ -517,12 +507,15 @@ void main(void) {
   rmSetMapSize(sizeX, sizeX);
   rmSetSeaLevel(0);
   rmTerrainInitialize(GetBlackType(), 0);
+  int revealer = rmCreateObjectDef(uuid());
+  rmAddObjectDefItem(revealer, "Revealer To Player", 1, 0.0);
   float radiusPitch = rmXTilesToFraction(20 + growth);
   float radiusHome = rmXTilesToFraction(16);
   float spacer = rmXTilesToFraction(5);
   int paid = rmCreateArmy(0, "Centers");
   float radius = (radiusPitch+spacer) * 2;
   pitch_flats(.5, .5, radiusPitch);
+  rmPlaceObjectDefAtLoc(revealer, 0, .5, .5, 1);
   postAt(.5, .5, paid);
   for(i=1;<=6) {
     float angle = (60 * i) + 60/2;
@@ -554,7 +547,8 @@ void main(void) {
         if (tick<=cNumberNonGaiaPlayers) {
           rmSetPlayerArea(tick, id);
           playerAt(tick, ptX, ptZ);
-          postAt(ptX, ptZ, paid);
+          for (p=1;<cNumberPlayers) rmPlaceObjectDefAtLoc(revealer, p, ptX, ptZ, 1);
+          postAt(ptX, ptZ, paid, tick);
         }
         tick = tick + 1;
         angle = angle + 180;
@@ -563,18 +557,19 @@ void main(void) {
     offset = 150;
     radius = radiusPitch*3 + spacer*6 + radiusHome;
   }
+
   int oid = rmCreateObjectDef(uuid());
   rmAddObjectDefItem(oid, "Slinger", 3, 2);
   rmAddObjectDefItem(oid, "Skraeling", 2, 2);
   rmAddObjectDefItem(oid, "Raiding Cavalry", 1, 2);
   rmPlaceObjectDefPerPlayer(oid, true);
 
- InjectXS();
+  InjectXS();
 
   // rmCreateTrigger("egg");
   // rmSwitchToTrigger(rmTriggerID("egg"));
   // rmAddTriggerEffect("Send Spoofed Chat");
   // rmSetTriggerEffectParam("Message", debug, false);
   // rmSetTriggerEffectParamInt("PlayerID", 1, false);
-   rmSetVCFile("vc_work");
+
 }
