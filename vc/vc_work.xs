@@ -606,7 +606,7 @@ void playerGameOver(int p=0) {
 string playerGrantPower(int p=0, int age=0, int uses=0) {
   string power = playerAgePower(p, age);
   if (uses>0) trChatSendToPlayer(0, p, csGranted + cSP + power);
-  trTechGodPowerAtPosition(p, playerAgePower(p, age), uses, age+1);
+  trTechGodPowerAtPosition(p, power, uses, age+1);
 }
 
 string playerName(int p=0) {
@@ -795,9 +795,9 @@ void gameStatsShow(bool health = false) {
 }
 
 void setupRevealer(int t=0, int p=0, int los=0) {
+  trModifyProtounit(kbPU(t), p, cUnitStatHP, 999999999999.0);
   trModifyProtounit(kbPU(t), p, cUnitStatLOS, 9999999999999999999.0);
   trModifyProtounit(kbPU(t), p, cUnitStatLOS, -9999999999999999999.0);
-  trModifyProtounit(kbPU(t), p, cUnitStatHP, 999999999999.0);
   trModifyProtounit(kbPU(t), p, cUnitStatLOS, los);
 }
 
@@ -914,7 +914,6 @@ void arenaRelicAward(int team=0) {
 
 void arenaEnd() {
   xsDisableRule(gArenaHB+gArena);
-  for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gPlayerRadius);
   for (p=1;<cNumberPlayers) {
     if (trTechStatusActive(p, gRelicTech)) trTechSetStatus(p, gRelicTech, cTechStatusUnobtainable);
     if (trTechStatusActive(p, cTechEclipseActive)) trTechSetStatus(p, cTechEclipseActive, cTechStatusUnobtainable);
@@ -924,7 +923,6 @@ void arenaEnd() {
 }
 
 void arenaBegin() {
-  for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gArenaRadius);
   xsEnableRule(gArenaHB+gArena);
 }
 
@@ -956,13 +954,14 @@ void battleCowards(int aid=0) {
     trUnitSelectClear();
     trUnitSelectByID(uid);
     float dist = trUnitDistanceToPoint(xsVectorGetX(v), 0, xsVectorGetZ(v));
-    if (dist > gArenaRadius) {
+    if (dist > (gArenaRadius - 9)) {
       trUnitMoveToPoint(xsVectorGetX(v), 0, xsVectorGetZ(v));
       int amt = 3 + (dist - gArenaRadius);
       vector up = kbUnitGetPosition(uid);
       trDamageUnit(amt);
       trUnitHighlight(2);
-      trUnitCreate(kbPU(cUnitTypeInfernoFlame), gDefault, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, 1);
+      trArmyDispatch(gArmy0, kbPU(cUnitTypeInfernoFlame), 1, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, true);
+      //trUnitCreate(kbPU(cUnitTypeInfernoFlame), gDefault, xsVectorGetX(up), 0, xsVectorGetZ(up), 0, 1);
     }
   }
 }
@@ -1012,19 +1011,9 @@ void emptyBuildings(int p=0) {
   }
 }
 
-void revealArea(int tid=0, int p=0, vector v=vector(0,0,0)) {
-  trUnitCreate(kbPU(tid), gDefault, xsVectorGetX(v), 0, xsVectorGetZ(v), 0, p);
-}
-
-void castHealingSpring() {
-  trUnitSelectClear();
-  trUnitSelect(gDefault);
-  trTechInvokeGodPower(0, gHealString, arenaVec(gArena), vector(0, 0, 0));
-}
-
 bool initArena() {
   if (intGet(gArenasInit, gArena)==1) return(false);
-  for (p=1;<cNumberPlayers) revealArea(cUnitTypeRevealerPlayer, p, arenaVec(gArena));
+  unitDispatch(cUnitTypeRevealer, arenaVec(gArena));
   gArenasInit = intSet(gArenasInit, gArena, 1);
   return(true);
 }
@@ -1050,7 +1039,9 @@ void initArenaLava() {
 void initArenaHealing() {
   if (initArena()) {
     alert(csRoundControlHeal);
-    castHealingSpring();
+    trUnitSelectClear();
+    trUnitSelect(gDefault);
+    trTechInvokeGodPower(0, gHealString, arenaVec(gArena), vector(0, 0, 0));
   }
 }
 
@@ -1217,7 +1208,7 @@ void battleBegin() {
         playerIncPopTot(p, aCnt);
         playerIncHPsTot(p, aHPs);
         teamIncHPs(t, aHPs);
-        float row = 0;
+        float row = 3;
         for (j=(aCnt-1);>=0) {
           float cell = (j%6) * 3.0;
           if (cell==0) row = row + 3.0;
@@ -1358,7 +1349,7 @@ void setupOptions() {
     speed = 10;
     gBuildTime = 45;
   }
-  // gBuildTime= 15;
+  gBuildTime= 15;
   if (vcGetGameplayMode()==cGameModeDeathmatch) gResRound = 1000;
   gResStart = gResRound;
   trRateResearch(speed);
@@ -1377,7 +1368,7 @@ void setupVectors() {
   trUnitSelectByID(uid);
   uid = kbArmyGetUnitID(aid, 1);
   float dist = trUnitDistanceToUnitID(uid);
-  gArenaRadius = dist / 2;
+  gArenaRadius = dist / 2 - 2;
   for(j=0;<aCnt) {
     uid = kbArmyGetUnitID(aid, j);
     int bid = trGetUnitScenarioNameNumber(uid);
@@ -1429,6 +1420,7 @@ void setupProtoUnits() {
   gameBlockUnits(gBlockGarrison);
   gameBlockUnits(gBlockFlying);
   setupRevealer(cUnitTypeRevealerPlayer, 0, 999);
+  setupRevealer(cUnitTypeRevealer, 0, gArenaRadius);
   for (p=1;<cNumberPlayers) setupRevealer(cUnitTypeRevealerPlayer, p, gPlayerRadius);
 }
 

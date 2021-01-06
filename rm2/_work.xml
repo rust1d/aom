@@ -1,4 +1,4 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <mapinfo
 detailsText="BloodSport by TwentyOneScore: Players build a team of 30 units each round during the 60 second build period. After the build period, units are teleported to the Arena and fighting begins. Round ends when one team is left. Take 7 rounds to win."
-details = "TwentyOneScore@BeerInHand.com" imagepath = "ui\TOS_BloodSport_256_16.tga" displayName="TOS_BloodSport-v4-0" cannotReplace=""/>
+details = "TwentyOneScore@BeerInHand.com" imagepath = "ui\badgeBackground" displayName="Work-v4-0" cannotReplace=""/>
